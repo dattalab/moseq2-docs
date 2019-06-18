@@ -1,0 +1,439 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_extract.extract package &#8212; moseq2-extract  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="moseq2_extract.io package" href="moseq2_extract.io.html" />
+    <link rel="prev" title="moseq2_extract package" href="moseq2_extract.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="moseq2-extract-extract-package">
+<h1>moseq2_extract.extract package<a class="headerlink" href="#moseq2-extract-extract-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-moseq2_extract.extract.extract">
+<span id="moseq2-extract-extract-extract-module"></span><h2>moseq2_extract.extract.extract module<a class="headerlink" href="#module-moseq2_extract.extract.extract" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_extract.extract.extract.extract_chunk">
+<code class="sig-prename descclassname">moseq2_extract.extract.extract.</code><code class="sig-name descname">extract_chunk</code><span class="sig-paren">(</span><em class="sig-param">chunk, use_em_tracker=False, prefilter_space=(3,), prefilter_time=None, iters_tail=1, iters_min=0, strel_tail=array([[0, 0, 0, 0, 1, 0, 0, 0, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=uint8), strel_min=array([[1, 1, 1, 1, 1],        [1, 1, 1, 1, 1],        [1, 1, 1, 1, 1],        [1, 1, 1, 1, 1],        [1, 1, 1, 1, 1]], dtype=uint8), min_height=10, max_height=100, mask_threshold=-20, use_cc=False, bground=None, roi=None, rho_mean=0, rho_cov=0, tracking_ll_threshold=-100, tracking_segment=True, tracking_init_mean=None, tracking_init_cov=None, tracking_init_strel=array([[0, 0, 0, 0, 1, 0, 0, 0, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=uint8), flip_classifier=None, flip_smoothing=51, frame_dtype='uint8', save_path='/Users/wgillis/dev/moseq2/moseq2-docs/extract/proc', progress_bar=True, crop_size=(80, 80), true_depth=673.1, centroid_hampel_span=5, centroid_hampel_sig=3, angle_hampel_span=5, angle_hampel_sig=3, model_smoothing_clips=(-300, -150), tracking_model_init='raw'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/extract.html#extract_chunk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.extract.extract_chunk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_extract.extract.proc">
+<span id="moseq2-extract-extract-proc-module"></span><h2>moseq2_extract.extract.proc module<a class="headerlink" href="#module-moseq2_extract.extract.proc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.apply_roi">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">apply_roi</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">roi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#apply_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.apply_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply ROI to data, consider adding constraints (e.g. mod32==0)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.clean_frames">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">clean_frames</code><span class="sig-paren">(</span><em class="sig-param">frames, prefilter_space=(3,), prefilter_time=None, strel_tail=array([[0, 0, 0, 1, 0, 0, 0],        [0, 1, 1, 1, 1, 1, 0],        [1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1],        [0, 1, 1, 1, 1, 1, 0],        [0, 0, 0, 1, 0, 0, 0]], dtype=uint8), iters_tail=None, frame_dtype='uint8', strel_min=array([[1, 1, 1, 1, 1],        [1, 1, 1, 1, 1],        [1, 1, 1, 1, 1],        [1, 1, 1, 1, 1],        [1, 1, 1, 1, 1]], dtype=uint8), iters_min=None, progress_bar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#clean_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.clean_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple filtering, median filter and morphological opening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frames</strong> (<em>3d np array</em>) – frames x r x c</p></li>
+<li><p><strong>strel</strong> (<em>opencv structuring element</em>) – strel for morph opening</p></li>
+<li><p><strong>iters_tail</strong> (<em>int</em>) – number of iterations to run opening</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>frame x r x c</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>filtered_frames (3d np array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.compute_scalars">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">compute_scalars</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">track_features</em>, <em class="sig-param">min_height=10</em>, <em class="sig-param">max_height=100</em>, <em class="sig-param">true_depth=673.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#compute_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.compute_scalars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes scalars
+Args:
+frames (3d numpy array): frames x r x c, uncropped mouse
+track_features (dictionary):  dictionary with tracking variables (centroid and orientation)
+min_height (float): minimum height of the mouse
+max_height (float): maximum height of the mouse</p>
+<p>Returns:
+features (dict): dictionary of scalars</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.crop_and_rotate_frames">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">crop_and_rotate_frames</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">features</em>, <em class="sig-param">crop_size=(80</em>, <em class="sig-param">80)</em>, <em class="sig-param">progress_bar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#crop_and_rotate_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.crop_and_rotate_frames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.feature_hampel_filter">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">feature_hampel_filter</code><span class="sig-paren">(</span><em class="sig-param">features</em>, <em class="sig-param">centroid_hampel_span=None</em>, <em class="sig-param">centroid_hampel_sig=3</em>, <em class="sig-param">angle_hampel_span=None</em>, <em class="sig-param">angle_hampel_sig=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#feature_hampel_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.feature_hampel_filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_bbox">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_bbox</code><span class="sig-paren">(</span><em class="sig-param">roi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_bbox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a binary mask, return an array with the x and y boundaries</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_bground_im">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_bground_im</code><span class="sig-paren">(</span><em class="sig-param">frames</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_bground_im"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_bground_im" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns background
+:param frames: frames x r x c, uncropped mouse
+:type frames: 3d numpy array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>r x c, background image</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bground (2d numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_bground_im_file">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_bground_im_file</code><span class="sig-paren">(</span><em class="sig-param">frames_file</em>, <em class="sig-param">frame_stride=500</em>, <em class="sig-param">med_scale=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_bground_im_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_bground_im_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns background from file
+:param frames_file: path to data with frames
+:type frames_file: path
+:param frame_stride:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>r x c, background image</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bground (2d numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_flips">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_flips</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">flip_file=None</em>, <em class="sig-param">smoothing=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_flips"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_flips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predict flips
+:param frames: frames x r x c, cropped mouse
+:type frames: 3d numpy array
+:param flip_file: path to joblib dump of scipy random forest classifier
+:type flip_file: string
+:param smoothing: kernel size for median filter smoothing of random forest probabilities
+:type smoothing: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true for flips</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>flips (bool array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_frame_features">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_frame_features</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">frame_threshold=10</em>, <em class="sig-param">mask=array([]</em>, <em class="sig-param">dtype=float64)</em>, <em class="sig-param">mask_threshold=-30</em>, <em class="sig-param">use_cc=False</em>, <em class="sig-param">progress_bar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_frame_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_frame_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use image moments to compute features of the largest object in the frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frames</strong> (<em>3d np array</em>) – </p></li>
+<li><p><strong>frame_threshold</strong> (<em>int</em>) – threshold in mm separating floor from mouse</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary with simple image features</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>features (dict list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_largest_cc">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_largest_cc</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">progress_bar=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_largest_cc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_largest_cc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns largest connected component blob in image
+:param frame: frames x r x c, uncropped mouse
+:type frame: 3d numpy array
+:param progress_bar: display progress bar
+:type progress_bar: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>frames x r x c, true where blob was found</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>flips (3d bool array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.get_roi">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">get_roi</code><span class="sig-paren">(</span><em class="sig-param">depth_image, strel_dilate=array([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], dtype=uint8), strel_erode=None, noise_tolerance=30, weights=(1, 0.1, 1), overlap_roi=None, gradient_filter=False, gradient_kernel=7, gradient_threshold=3000, fill_holes=True, **kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#get_roi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.get_roi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an ROI using RANSAC plane fitting and simple blob features</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.im_moment_features">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">im_moment_features</code><span class="sig-paren">(</span><em class="sig-param">IM</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#im_moment_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.im_moment_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the method of moments and centralized moments to get image properties</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>IM</strong> (<em>2d numpy array</em>) – depth image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns a dictionary with orientation,
+centroid, and ellipse axis length</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Features (dictionary)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.proc.model_smoother">
+<code class="sig-prename descclassname">moseq2_extract.extract.proc.</code><code class="sig-name descname">model_smoother</code><span class="sig-paren">(</span><em class="sig-param">features</em>, <em class="sig-param">ll=None</em>, <em class="sig-param">clips=(-300</em>, <em class="sig-param">-125)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/proc.html#model_smoother"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.proc.model_smoother" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_extract.extract.roi">
+<span id="moseq2-extract-extract-roi-module"></span><h2>moseq2_extract.extract.roi module<a class="headerlink" href="#module-moseq2_extract.extract.roi" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_extract.extract.roi.plane_fit3">
+<code class="sig-prename descclassname">moseq2_extract.extract.roi.</code><code class="sig-name descname">plane_fit3</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/roi.html#plane_fit3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.roi.plane_fit3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a plane to 3 points (min number of points for fitting a plane)
+:param points: each row is a group of points,
+:type points: 2d numpy array
+:param columns correspond to x,y,z:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>linear plane fit–&gt;a*x+b*y+c*z+d</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>plane (1d numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.roi.plane_ransac">
+<code class="sig-prename descclassname">moseq2_extract.extract.roi.</code><code class="sig-name descname">plane_ransac</code><span class="sig-paren">(</span><em class="sig-param">depth_image</em>, <em class="sig-param">depth_range=(650</em>, <em class="sig-param">750)</em>, <em class="sig-param">iters=1000</em>, <em class="sig-param">noise_tolerance=30</em>, <em class="sig-param">in_ratio=0.1</em>, <em class="sig-param">progress_bar=True</em>, <em class="sig-param">mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/roi.html#plane_ransac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.roi.plane_ransac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Naive RANSAC implementation for plane fitting
+:param depth_image: hxw, background image to fit plane to
+:type depth_image: 2d numpy array
+:param depth_range: min/max depth (mm) to consider pixels for plane
+:type depth_range: tuple
+:param iters: number of RANSAC iterations
+:type iters: int
+:param noise_tolerance: dist. from plane to consider a point an inlier
+:type noise_tolerance: float
+:param in_ratio: frac. of points required to consider a plane fit good
+:type in_ratio: float</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>plane fit to data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>best_plane (1d numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_extract.extract.track">
+<span id="moseq2-extract-extract-track-module"></span><h2>moseq2_extract.extract.track module<a class="headerlink" href="#module-moseq2_extract.extract.track" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_extract.extract.track.em_get_ll">
+<code class="sig-prename descclassname">moseq2_extract.extract.track.</code><code class="sig-name descname">em_get_ll</code><span class="sig-paren">(</span><em class="sig-param">frames</em>, <em class="sig-param">mean</em>, <em class="sig-param">cov</em>, <em class="sig-param">progress_bar=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/track.html#em_get_ll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.track.em_get_ll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns likelihoods for each frame given tracker parameters
+:param frames: depth frames
+:type frames: 3d numpy array
+:param mean: frames x d, mean estimates
+:type mean: 2d numpy array
+:param cov: frames x d x d, covariance estimates
+:type cov: 3d numpy array
+:param progress_bar: use a progress bar
+:type progress_bar: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>frames x rows x columns, log likelihood of all pixels in each frame</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ll (3d numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.track.em_init">
+<code class="sig-prename descclassname">moseq2_extract.extract.track.</code><code class="sig-name descname">em_init</code><span class="sig-paren">(</span><em class="sig-param">depth_frame, depth_floor, depth_ceiling, init_strel=array([[0, 0, 0, 0, 1, 0, 0, 0, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=uint8), strel_iters=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/track.html#em_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.track.em_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.track.em_iter">
+<code class="sig-prename descclassname">moseq2_extract.extract.track.</code><code class="sig-name descname">em_iter</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">mean</em>, <em class="sig-param">cov</em>, <em class="sig-param">lamd=0.1</em>, <em class="sig-param">epsilon=0.1</em>, <em class="sig-param">max_iter=25</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/track.html#em_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.track.em_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Single iteration of EM tracker
+:param data: nx3, x, y, z coordinates to use
+:type data: 3d numpy array
+:param mean: dx1, current mean estimate
+:type mean: 1d numpy array
+:param cov: dxd, current covariance estimate
+:type cov: 2d numpy array
+:param lambd: constant to add to diagonal of covariance matrix
+:type lambd: float
+:param epsilon: tolerance on change in likelihood to terminate iteration
+:type epsilon: float
+:param max_iter:
+:type max_iter: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>updated mean
+cov (2d numpy array): updated covariance</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>mean (1d numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.extract.track.em_tracking">
+<code class="sig-prename descclassname">moseq2_extract.extract.track.</code><code class="sig-name descname">em_tracking</code><span class="sig-paren">(</span><em class="sig-param">frames, raw_frames, segment=True, ll_threshold=-30, rho_mean=0, rho_cov=0, depth_floor=10, depth_ceiling=100, progress_bar=True, init_mean=None, init_cov=None, init_frames=10, init_method='raw', init_strel=array([[0, 0, 0, 0, 1, 0, 0, 0, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [1, 1, 1, 1, 1, 1, 1, 1, 1],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 1, 1, 1, 1, 1, 1, 1, 0],        [0, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=uint8)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/extract/track.html#em_tracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.extract.track.em_tracking" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>The dead-simple tracker, use EM update rules to follow a 3D Gaussian</dt><dd><p>around the room!</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frames</strong> (<em>3d numpy array</em>) – nframes x r x c</p></li>
+<li><p><strong>segment</strong> (<em>bool</em>) – use only the largest blob for em updates</p></li>
+<li><p><strong>ll_threshold</strong> (<em>float</em>) – threshold on log likelihood for segmentation</p></li>
+<li><p><strong>rho_mean</strong> (<em>float</em>) – smoothing parameter for the mean</p></li>
+<li><p><strong>rho_cov</strong> (<em>float</em>) – smoothing parameter for the covariance</p></li>
+<li><p><strong>depth_floor</strong> (<em>float</em>) – height in mm for separating mouse from floor</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>mean and covariance estimates for each frame</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model_parameters (dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_extract.extract">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-moseq2_extract.extract" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">moseq2-extract</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="moseq2_extract.html">moseq2_extract package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="moseq2_extract.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">moseq2_extract.extract package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_extract.extract.extract">moseq2_extract.extract.extract module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_extract.extract.proc">moseq2_extract.extract.proc module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_extract.extract.roi">moseq2_extract.extract.roi module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_extract.extract.track">moseq2_extract.extract.track module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_extract.extract">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_extract.io.html">moseq2_extract.io package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.html#module-moseq2_extract.cli">moseq2_extract.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.html#module-moseq2_extract.util">moseq2_extract.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.html#module-moseq2_extract">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="moseq2_extract.html">moseq2_extract package</a><ul>
+      <li>Previous: <a href="moseq2_extract.html" title="previous chapter">moseq2_extract package</a></li>
+      <li>Next: <a href="moseq2_extract.io.html" title="next chapter">moseq2_extract.io package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/moseq2_extract.extract.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

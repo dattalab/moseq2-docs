@@ -1,0 +1,506 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>MoSeq2-viz - the command-line interface &#8212; moseq2-viz  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="moseq2_viz package" href="moseq2_viz.html" />
+    <link rel="prev" title="Welcome to moseq2_viz’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="moseq2-viz-the-command-line-interface">
+<h1>MoSeq2-viz - the command-line interface<a class="headerlink" href="#moseq2-viz-the-command-line-interface" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="moseq2-viz">
+<h2>moseq2-viz<a class="headerlink" href="#moseq2-viz" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<div class="section" id="moseq2-viz-add-group">
+<h3>add-group<a class="headerlink" href="#moseq2-viz-add-group" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz add-group <span class="o">[</span>OPTIONS<span class="o">]</span> INDEX_FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-k">
+<code class="sig-name descname">-k</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--key</code><code class="sig-prename descclassname"> &lt;key&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key to search for value  [default: SubjectName]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-v">
+<code class="sig-name descname">-v</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--value</code><code class="sig-prename descclassname"> &lt;value&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value to search for  [default: Mouse]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-g">
+<code class="sig-name descname">-g</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--group</code><code class="sig-prename descclassname"> &lt;group&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Group name to map to  [default: Group1]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-e">
+<code class="sig-name descname">-e</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--exact</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exact match only  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-lowercase">
+<code class="sig-name descname">--lowercase</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-lowercase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowercase text filter  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-n">
+<code class="sig-name descname">-n</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--negative</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Negative match (everything that does not match is included)  [default: False]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-add-group-arg-index-file">
+<code class="sig-name descname">INDEX_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-add-group-arg-index-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-viz-copy-h5-metadata-to-yaml">
+<h3>copy-h5-metadata-to-yaml<a class="headerlink" href="#moseq2-viz-copy-h5-metadata-to-yaml" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz copy-h5-metadata-to-yaml <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-copy-h5-metadata-to-yaml-i">
+<code class="sig-name descname">-i</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--input-dir</code><code class="sig-prename descclassname"> &lt;input_dir&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-copy-h5-metadata-to-yaml-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory to find h5 files  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-copy-h5-metadata-to-yaml-h5-metadata-path">
+<code class="sig-name descname">--h5-metadata-path</code><code class="sig-prename descclassname"> &lt;h5_metadata_path&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-copy-h5-metadata-to-yaml-h5-metadata-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to acquisition metadata in h5 files  [default: /metadata/acquisition]</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-viz-generate-index">
+<h3>generate-index<a class="headerlink" href="#moseq2-viz-generate-index" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz generate-index <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-generate-index-i">
+<code class="sig-name descname">-i</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--input-dir</code><code class="sig-prename descclassname"> &lt;input_dir&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-generate-index-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory to find h5 files  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-generate-index-p">
+<code class="sig-name descname">-p</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--pca-file</code><code class="sig-prename descclassname"> &lt;pca_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-generate-index-p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to PCA results  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz/_pca/pca_scores.h5]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-generate-index-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-generate-index-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location for storing index  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz/moseq2-index.yaml]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-generate-index-f">
+<code class="sig-name descname">-f</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--filter</code><code class="sig-prename descclassname"> &lt;_filter&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-generate-index-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Regex filter for metadata</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-generate-index-a">
+<code class="sig-name descname">-a</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--all-uuids</code><code class="sig-prename descclassname"> &lt;all_uuids&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-generate-index-a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use all uuids  [default: False]</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-viz-make-crowd-movies">
+<h3>make-crowd-movies<a class="headerlink" href="#moseq2-viz-make-crowd-movies" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz make-crowd-movies <span class="o">[</span>OPTIONS<span class="o">]</span> INDEX_FILE MODEL_PATH
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-max-syllable">
+<code class="sig-name descname">--max-syllable</code><code class="sig-prename descclassname"> &lt;max_syllable&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-max-syllable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of max syllable to render  [default: 40]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-m">
+<code class="sig-name descname">-m</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--max-examples</code><code class="sig-prename descclassname"> &lt;max_examples&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of examples to show  [default: 40]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-t">
+<code class="sig-name descname">-t</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--threads</code><code class="sig-prename descclassname"> &lt;threads&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of threads to use for rendering crowd movies  [default: -1]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-sort">
+<code class="sig-name descname">--sort</code><code class="sig-prename descclassname"> &lt;sort&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort syllables by usage  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-count">
+<code class="sig-name descname">--count</code><code class="sig-prename descclassname"> &lt;count&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-count" title="Permalink to this definition">¶</a></dt>
+<dd><p>How to quantify syllable usage  [default: usage]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-dir</code><code class="sig-prename descclassname"> &lt;output_dir&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to store files  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz/crowd_movies]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-min-height">
+<code class="sig-name descname">--min-height</code><code class="sig-prename descclassname"> &lt;min_height&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-min-height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum height for scaling videos  [default: 5]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-max-height">
+<code class="sig-name descname">--max-height</code><code class="sig-prename descclassname"> &lt;max_height&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-max-height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum height for scaling videos  [default: 80]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-raw-size">
+<code class="sig-name descname">--raw-size</code><code class="sig-prename descclassname"> &lt;raw_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-raw-size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of original videos  [default: 512, 424]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-scale">
+<code class="sig-name descname">--scale</code><code class="sig-prename descclassname"> &lt;scale&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scaling from pixel units to mm  [default: 1]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-cmap">
+<code class="sig-name descname">--cmap</code><code class="sig-prename descclassname"> &lt;cmap&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-cmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of valid Matplotlib colormap for false-coloring images  [default: jet]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-dur-clip">
+<code class="sig-name descname">--dur-clip</code><code class="sig-prename descclassname"> &lt;dur_clip&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-dur-clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exclude syllables more than this number of frames (None for no limit)  [default: 300]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-legacy-jitter-fix">
+<code class="sig-name descname">--legacy-jitter-fix</code><code class="sig-prename descclassname"> &lt;legacy_jitter_fix&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-legacy-jitter-fix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set to true if you notice jitter in your crowd movies  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-frame-path">
+<code class="sig-name descname">--frame-path</code><code class="sig-prename descclassname"> &lt;frame_path&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-frame-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to depth frames in h5 file  [default: frames]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-arg-index-file">
+<code class="sig-name descname">INDEX_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-arg-index-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-make-crowd-movies-arg-model-path">
+<code class="sig-name descname">MODEL_PATH</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-make-crowd-movies-arg-model-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-viz-plot-scalar-summary">
+<h3>plot-scalar-summary<a class="headerlink" href="#moseq2-viz-plot-scalar-summary" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz plot-scalar-summary <span class="o">[</span>OPTIONS<span class="o">]</span> INDEX_FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-scalar-summary-output-file">
+<code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-scalar-summary-output-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>[default: /Users/wgillis/dev/moseq2/moseq2-docs/viz/scalars]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-scalar-summary-arg-index-file">
+<code class="sig-name descname">INDEX_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-scalar-summary-arg-index-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-viz-plot-transition-graph">
+<h3>plot-transition-graph<a class="headerlink" href="#moseq2-viz-plot-transition-graph" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz plot-transition-graph <span class="o">[</span>OPTIONS<span class="o">]</span> INDEX_FILE MODEL_FIT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-max-syllable">
+<code class="sig-name descname">--max-syllable</code><code class="sig-prename descclassname"> &lt;max_syllable&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-max-syllable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of max syllable to render  [default: 40]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-g">
+<code class="sig-name descname">-g</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--group</code><code class="sig-prename descclassname"> &lt;group&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of group(s) to show</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-output-file">
+<code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-output-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filename to store plot  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz/transitions]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-normalize">
+<code class="sig-name descname">--normalize</code><code class="sig-prename descclassname"> &lt;normalize&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>How to normalize transition probabilities  [default: bigram]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-edge-threshold">
+<code class="sig-name descname">--edge-threshold</code><code class="sig-prename descclassname"> &lt;edge_threshold&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-edge-threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Threshold for edges to show  [default: 0.001]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-usage-threshold">
+<code class="sig-name descname">--usage-threshold</code><code class="sig-prename descclassname"> &lt;usage_threshold&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-usage-threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Threshold for nodes to show  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-layout">
+<code class="sig-name descname">--layout</code><code class="sig-prename descclassname"> &lt;layout&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default networkx layout algorithm  [default: spring]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-k">
+<code class="sig-name descname">-k</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--keep-orphans</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show orphaned nodes  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-orphan-weight">
+<code class="sig-name descname">--orphan-weight</code><code class="sig-prename descclassname"> &lt;orphan_weight&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-orphan-weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weight for non-existent connections  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-arrows">
+<code class="sig-name descname">--arrows</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-arrows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show arrows  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-sort">
+<code class="sig-name descname">--sort</code><code class="sig-prename descclassname"> &lt;sort&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort syllables by usage  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-count">
+<code class="sig-name descname">--count</code><code class="sig-prename descclassname"> &lt;count&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-count" title="Permalink to this definition">¶</a></dt>
+<dd><p>How to quantify syllable usage  [default: usage]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-edge-scaling">
+<code class="sig-name descname">--edge-scaling</code><code class="sig-prename descclassname"> &lt;edge_scaling&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-edge-scaling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale factor from transition probabilities to edge width  [default: 250]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-node-scaling">
+<code class="sig-name descname">--node-scaling</code><code class="sig-prename descclassname"> &lt;node_scaling&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-node-scaling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale factor for nodes by usage  [default: 10000.0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-scale-node-by-usage">
+<code class="sig-name descname">--scale-node-by-usage</code><code class="sig-prename descclassname"> &lt;scale_node_by_usage&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-scale-node-by-usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale node sizes by usages probabilities  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-width-per-group">
+<code class="sig-name descname">--width-per-group</code><code class="sig-prename descclassname"> &lt;width_per_group&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-width-per-group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Width (in inches) for figure canvas per group  [default: 8]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-arg-index-file">
+<code class="sig-name descname">INDEX_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-arg-index-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-transition-graph-arg-model-fit">
+<code class="sig-name descname">MODEL_FIT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-transition-graph-arg-model-fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-viz-plot-usages">
+<h3>plot-usages<a class="headerlink" href="#moseq2-viz-plot-usages" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-viz plot-usages <span class="o">[</span>OPTIONS<span class="o">]</span> INDEX_FILE MODEL_FIT
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-sort">
+<code class="sig-name descname">--sort</code><code class="sig-prename descclassname"> &lt;sort&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort syllables by usage  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-count">
+<code class="sig-name descname">--count</code><code class="sig-prename descclassname"> &lt;count&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-count" title="Permalink to this definition">¶</a></dt>
+<dd><p>How to quantify syllable usage  [default: usage]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-max-syllable">
+<code class="sig-name descname">--max-syllable</code><code class="sig-prename descclassname"> &lt;max_syllable&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-max-syllable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of max syllable to render  [default: 40]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-g">
+<code class="sig-name descname">-g</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--group</code><code class="sig-prename descclassname"> &lt;group&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of group(s) to show</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-output-file">
+<code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-output-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filename to store plot  [default: /Users/wgillis/dev/moseq2/moseq2-docs/viz/usages]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-arg-index-file">
+<code class="sig-name descname">INDEX_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-arg-index-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-viz-plot-usages-arg-model-fit">
+<code class="sig-name descname">MODEL_FIT</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-viz-plot-usages-arg-model-fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">moseq2-viz</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Follow this link for documentation using the command-line interface</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MoSeq2-viz - the command-line interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#moseq2-viz">moseq2-viz</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Check out the API here:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="moseq2_viz.html">moseq2_viz package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to moseq2_viz’s documentation!</a></li>
+      <li>Next: <a href="moseq2_viz.html" title="next chapter">moseq2_viz package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/cli.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

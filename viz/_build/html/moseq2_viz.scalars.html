@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_viz.scalars package &#8212; moseq2-viz  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="moseq2_viz.model package" href="moseq2_viz.model.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="moseq2-viz-scalars-package">
+<h1>moseq2_viz.scalars package<a class="headerlink" href="#moseq2-viz-scalars-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-moseq2_viz.scalars.util">
+<span id="moseq2-viz-scalars-util-module"></span><h2>moseq2_viz.scalars.util module<a class="headerlink" href="#module-moseq2_viz.scalars.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.convert_legacy_scalars">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">convert_legacy_scalars</code><span class="sig-paren">(</span><em class="sig-param">old_features</em>, <em class="sig-param">force=False</em>, <em class="sig-param">true_depth=673.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#convert_legacy_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.convert_legacy_scalars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts scalars in the legacy format to the new format, with explicit units.
+:param old_features: filename, h5 group,</p>
+<blockquote>
+<div><p>or dictionary of scalar values</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – force the conversion of centroid_[xy]_px into mm</p></li>
+<li><p><strong>true_depth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – true depth of the floor relative to the camera (673.1 mm by default)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of scalar values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>features</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.convert_pxs_to_mm">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">convert_pxs_to_mm</code><span class="sig-paren">(</span><em class="sig-param">coords</em>, <em class="sig-param">resolution=(512</em>, <em class="sig-param">424)</em>, <em class="sig-param">field_of_view=(70.6</em>, <em class="sig-param">60)</em>, <em class="sig-param">true_depth=673.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#convert_pxs_to_mm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.convert_pxs_to_mm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts x, y coordinates in pixel space to mm</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.find_and_load_feedback">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">find_and_load_feedback</code><span class="sig-paren">(</span><em class="sig-param">extract_path</em>, <em class="sig-param">input_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#find_and_load_feedback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.find_and_load_feedback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.generate_empty_feature_dict">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">generate_empty_feature_dict</code><span class="sig-paren">(</span><em class="sig-param">nframes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#generate_empty_feature_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.generate_empty_feature_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.get_scalar_map">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">get_scalar_map</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">fill_nans=True</em>, <em class="sig-param">force_conversion=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#get_scalar_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.get_scalar_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.get_scalar_triggered_average">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">get_scalar_triggered_average</code><span class="sig-paren">(</span><em class="sig-param">scalar_map, model_labels, max_syllable=40, nlags=20, include_keys=['velocity_2d_mm', 'velocity_3d_mm', 'width_mm', 'length_mm', 'height_ave_mm', 'angle'], zscore=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#get_scalar_triggered_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.get_scalar_triggered_average" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.is_legacy">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">is_legacy</code><span class="sig-paren">(</span><em class="sig-param">features</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#is_legacy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.is_legacy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks a dictionary of features to see if they correspond with an older version
+of moseq</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>true if the dict is from an old dataset</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_legacy</span><span class="p">({</span><span class="s1">&#39;centroid_x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;area&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_legacy</span><span class="p">({</span><span class="s1">&#39;centroid_x_mm&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;area_mm&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.nanzscore">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">nanzscore</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#nanzscore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.nanzscore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.process_scalars">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">process_scalars</code><span class="sig-paren">(</span><em class="sig-param">scalar_map</em>, <em class="sig-param">include_keys</em>, <em class="sig-param">zscore=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#process_scalars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.process_scalars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.remove_nans_from_labels">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">remove_nans_from_labels</code><span class="sig-paren">(</span><em class="sig-param">idx</em>, <em class="sig-param">labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#remove_nans_from_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.remove_nans_from_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the frames from <cite>labels</cite> where <cite>idx</cite> has NaNs in it</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.scalars_to_dataframe">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">scalars_to_dataframe</code><span class="sig-paren">(</span><em class="sig-param">index, include_keys=['SessionName', 'SubjectName', 'StartTime'], include_model=None, disable_output=False, include_feedback=None, force_conversion=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#scalars_to_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.scalars_to_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a dataframe containing scalar values over the course of a recording session.
+If a model string is included, then return only animals that were included in the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>) – a sorted_index generated by <cite>parse_index</cite> or <cite>get_sorted_index</cite></p></li>
+<li><p><strong>include_keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>) – a list of other moseq related keys to include in the dataframe</p></li>
+<li><p><strong>include_model</strong> (<em>str</em>) – path to an existing moseq model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.scalars.util.star_valmap">
+<code class="sig-prename descclassname">moseq2_viz.scalars.util.</code><code class="sig-name descname">star_valmap</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/scalars/util.html#star_valmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.scalars.util.star_valmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_viz.scalars">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-moseq2_viz.scalars" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">moseq2-viz</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="moseq2_viz.html">moseq2_viz package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="moseq2_viz.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="moseq2_viz.info.html">moseq2_viz.info package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_viz.io.html">moseq2_viz.io package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_viz.model.html">moseq2_viz.model package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">moseq2_viz.scalars package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_viz.scalars.util">moseq2_viz.scalars.util module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_viz.scalars">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz.cli">moseq2_viz.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz.util">moseq2_viz.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz.viz">moseq2_viz.viz module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="moseq2_viz.html">moseq2_viz package</a><ul>
+      <li>Previous: <a href="moseq2_viz.model.html" title="previous chapter">moseq2_viz.model package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/moseq2_viz.scalars.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

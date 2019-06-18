@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_extract.extract.track &#8212; moseq2-extract  documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for moseq2_extract.extract.track</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">moseq2_extract.util</span> <span class="k">import</span> <span class="n">select_strel</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">import</span> <span class="nn">statsmodels.stats.correlation_tools</span> <span class="k">as</span> <span class="nn">stats_tools</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">tqdm</span>
+
+
+<div class="viewcode-block" id="em_iter"><a class="viewcode-back" href="../../../moseq2_extract.extract.html#moseq2_extract.extract.track.em_iter">[docs]</a><span class="k">def</span> <span class="nf">em_iter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">lamd</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Single iteration of EM tracker</span>
+<span class="sd">    Args:</span>
+<span class="sd">        data (3d numpy array): nx3, x, y, z coordinates to use</span>
+<span class="sd">        mean (1d numpy array): dx1, current mean estimate</span>
+<span class="sd">        cov (2d numpy array): dxd, current covariance estimate</span>
+<span class="sd">        lambd (float): constant to add to diagonal of covariance matrix</span>
+<span class="sd">        epsilon (float): tolerance on change in likelihood to terminate iteration</span>
+<span class="sd">        max_iter (int):</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        mean (1d numpy array): updated mean</span>
+<span class="sd">        cov (2d numpy array): updated covariance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">prev_likelihood</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ll</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">ndatapoints</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pxtheta_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndatapoints</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="n">pxtheta_raw</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">cov</span><span class="p">)</span>
+        <span class="n">pxtheta_raw</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pxtheta_raw</span><span class="p">)</span>
+
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">pxtheta_raw</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">stats_tools</span><span class="o">.</span><span class="n">cov_nearest</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">pxtheta_raw</span><span class="p">,</span> <span class="n">dx</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">lamd</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+        <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pxtheta_raw</span><span class="o">+</span><span class="mf">1e-300</span><span class="p">))</span>
+        <span class="n">delta_likelihood</span> <span class="o">=</span> <span class="p">(</span><span class="n">ll</span><span class="o">-</span><span class="n">prev_likelihood</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">delta_likelihood</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span>
+                <span class="n">delta_likelihood</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">prev_likelihood</span><span class="p">)):</span>
+            <span class="k">break</span>
+
+        <span class="n">prev_likelihood</span> <span class="o">=</span> <span class="n">ll</span>
+
+    <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">cov</span></div>
+
+
+<div class="viewcode-block" id="em_init"><a class="viewcode-back" href="../../../moseq2_extract.extract.html#moseq2_extract.extract.track.em_init">[docs]</a><span class="k">def</span> <span class="nf">em_init</span><span class="p">(</span><span class="n">depth_frame</span><span class="p">,</span> <span class="n">depth_floor</span><span class="p">,</span> <span class="n">depth_ceiling</span><span class="p">,</span>
+            <span class="n">init_strel</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_ELLIPSE</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">strel_iters</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">depth_frame</span> <span class="o">&gt;</span> <span class="n">depth_floor</span><span class="p">,</span> <span class="n">depth_frame</span> <span class="o">&lt;</span> <span class="n">depth_ceiling</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_OPEN</span><span class="p">,</span> <span class="n">init_strel</span><span class="p">,</span> <span class="n">strel_iters</span><span class="p">)</span>
+
+    <span class="n">cnts</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_TREE</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cnts</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">use_cnt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+        <span class="n">mouse_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">drawContours</span><span class="p">(</span><span class="n">mouse_mask</span><span class="p">,</span> <span class="n">cnts</span><span class="p">,</span> <span class="n">use_cnt</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FILLED</span><span class="p">)</span>
+        <span class="n">mouse_mask</span> <span class="o">=</span> <span class="n">mouse_mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">mouse_mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">mouse_mask</span></div>
+
+
+<div class="viewcode-block" id="em_tracking"><a class="viewcode-back" href="../../../moseq2_extract.extract.html#moseq2_extract.extract.track.em_tracking">[docs]</a><span class="k">def</span> <span class="nf">em_tracking</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">raw_frames</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ll_threshold</span><span class="o">=-</span><span class="mi">30</span><span class="p">,</span> <span class="n">rho_mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rho_cov</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">depth_floor</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">depth_ceiling</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">init_mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_cov</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_frames</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">,</span>
+                <span class="n">init_strel</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_ELLIPSE</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))):</span>
+    <span class="sd">&quot;&quot;&quot;The dead-simple tracker, use EM update rules to follow a 3D Gaussian</span>
+<span class="sd">       around the room!</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frames (3d numpy array): nframes x r x c</span>
+<span class="sd">        segment (bool): use only the largest blob for em updates</span>
+<span class="sd">        ll_threshold (float): threshold on log likelihood for segmentation</span>
+<span class="sd">        rho_mean (float): smoothing parameter for the mean</span>
+<span class="sd">        rho_cov (float): smoothing parameter for the covariance</span>
+<span class="sd">        depth_floor (float): height in mm for separating mouse from floor</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        model_parameters (dict): mean and covariance estimates for each frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># initialize the mean and covariance</span>
+
+    <span class="n">nframes</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+    <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">coords</span><span class="p">,</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+
+    <span class="k">if</span> <span class="n">init_mean</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">init_cov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">init_method</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
+            <span class="n">use_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frames</span><span class="p">[:</span><span class="n">init_frames</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">init_method</span> <span class="o">==</span> <span class="s1">&#39;med&#39;</span><span class="p">:</span>
+            <span class="n">use_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">frames</span><span class="p">[:</span><span class="n">init_frames</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">init_method</span> <span class="o">==</span> <span class="s1">&#39;raw&#39;</span><span class="p">:</span>
+            <span class="n">use_frame</span> <span class="o">=</span> <span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+
+        <span class="n">mouse_mask</span> <span class="o">=</span> <span class="n">em_init</span><span class="p">(</span><span class="n">use_frame</span><span class="p">,</span>
+                             <span class="n">depth_floor</span><span class="o">=</span><span class="n">depth_floor</span><span class="p">,</span>
+                             <span class="n">depth_ceiling</span><span class="o">=</span><span class="n">depth_ceiling</span><span class="p">,</span>
+                             <span class="n">init_strel</span><span class="o">=</span><span class="n">init_strel</span><span class="p">)</span>
+        <span class="n">include_pixels</span> <span class="o">=</span> <span class="n">mouse_mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">init_mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="n">include_pixels</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">init_cov</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cov</span> <span class="o">=</span> <span class="n">stats_tools</span><span class="o">.</span><span class="n">cov_nearest</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="n">include_pixels</span><span class="p">]))</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">20</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mean</span><span class="p">)):</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="n">init_mean</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="n">init_cov</span>
+
+    <span class="n">model_parameters</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s1">&#39;float64&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;cov&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model_parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">model_parameters</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">nframes</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">progress_bar</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Computing EM&#39;</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">repeat</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nframes</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">repeat</span><span class="p">:</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">coords</span><span class="p">,</span> <span class="n">raw_frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">coords</span><span class="p">,</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+
+        <span class="n">pxtheta_im</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+
+        <span class="c1"># segment to find pixels with likely mice, only use those for updating</span>
+
+        <span class="c1"># if we try to find contours and we fail, repeat with the base initialization</span>
+        <span class="c1"># if THAT fails, go back to the unfiltered frame and repeat base initialization</span>
+        <span class="c1"># if THAT fails, just set all the pixels to true (tracking is hopeless, get the mouse in later frames)</span>
+        <span class="k">if</span> <span class="n">segment</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">repeat</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cnts</span><span class="p">,</span> <span class="n">hierarchy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">((</span><span class="n">pxtheta_im</span> <span class="o">&gt;</span> <span class="n">ll_threshold</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">),</span>
+                                                   <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_TREE</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cv2</span><span class="o">.</span><span class="n">contourArea</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cnts</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+
+            <span class="k">if</span> <span class="n">tmp</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">repeat</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">use_cnt</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">pxtheta_im</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">drawContours</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">cnts</span><span class="p">,</span> <span class="n">use_cnt</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FILLED</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">segment</span> <span class="ow">and</span> <span class="n">repeat</span><span class="p">:</span>
+            <span class="c1"># basically try each step in succession, first try to get contours</span>
+            <span class="c1"># if that fails try re-initialization, if that fails try re-initialization</span>
+            <span class="c1"># with raw data, if that fails give up and use all of the pixels</span>
+            <span class="c1"># try:</span>
+            <span class="c1">#     cnts, hierarchy = cv2.findContours((pxtheta_im &gt; ll_threshold).astype(&#39;uint8&#39;),</span>
+            <span class="c1">#                                        cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)</span>
+            <span class="c1">#     tmp = np.array([cv2.contourArea(x) for x in cnts])</span>
+            <span class="c1"># except Exception:</span>
+            <span class="c1">#     tmp = np.array([])</span>
+            <span class="c1">#</span>
+            <span class="c1"># print(tmp.size())</span>
+
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">em_init</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                           <span class="n">depth_floor</span><span class="o">=</span><span class="n">depth_floor</span><span class="p">,</span>
+                           <span class="n">depth_ceiling</span><span class="o">=</span><span class="n">depth_ceiling</span><span class="p">,</span>
+                           <span class="n">init_strel</span><span class="o">=</span><span class="n">init_strel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">em_init</span><span class="p">(</span><span class="n">raw_frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+                               <span class="n">depth_floor</span><span class="o">=</span><span class="n">depth_floor</span><span class="p">,</span>
+                               <span class="n">depth_ceiling</span><span class="o">=</span><span class="n">depth_ceiling</span><span class="p">,</span>
+                               <span class="n">init_strel</span><span class="o">=</span><span class="n">init_strel</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">pxtheta_im</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+
+            <span class="c1"># else:</span>
+            <span class="c1">#     use_cnt = tmp.argmax()</span>
+            <span class="c1">#     mask = np.zeros_like(pxtheta_im)</span>
+            <span class="c1">#     cv2.drawContours(mask, cnts, use_cnt, (255), cv2.FILLED)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">pxtheta_im</span> <span class="o">&gt;</span> <span class="n">ll_threshold</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&lt;=</span> <span class="n">depth_floor</span><span class="p">,</span> <span class="n">xyz</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;=</span> <span class="n">depth_ceiling</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mean_update</span><span class="p">,</span> <span class="n">cov_update</span> <span class="o">=</span> <span class="n">em_iter</span><span class="p">(</span><span class="n">xyz</span><span class="p">[:,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                              <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="o">=</span><span class="n">cov</span><span class="p">,</span>
+                                              <span class="n">epsilon</span><span class="o">=.</span><span class="mi">25</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">lamd</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">repeat</span><span class="p">:</span>
+                <span class="n">repeat</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mean_update</span> <span class="o">=</span> <span class="n">mean</span>
+                <span class="n">cov_update</span> <span class="o">=</span> <span class="n">cov</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mean_update</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">cov_update</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">repeat</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Backing off...&#39;</span><span class="p">)</span>
+            <span class="n">repeat</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">mean_update</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">cov_update</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)):</span>
+            <span class="n">mean_update</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">cov_update</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mi">30</span>
+
+        <span class="c1"># exponential smoothers for mean and covariance if</span>
+        <span class="c1"># you want (easier to do this offline)</span>
+        <span class="c1"># leave these set to 0 for now</span>
+        <span class="c1"># print(mean)</span>
+        <span class="c1"># print(cov)</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">rho_mean</span><span class="p">)</span><span class="o">*</span><span class="n">mean_update</span><span class="o">+</span><span class="n">rho_mean</span><span class="o">*</span><span class="n">mean</span>
+        <span class="n">cov</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">rho_cov</span><span class="p">)</span><span class="o">*</span><span class="n">cov_update</span><span class="o">+</span><span class="n">rho_cov</span><span class="o">*</span><span class="n">cov</span>
+
+        <span class="n">model_parameters</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="n">model_parameters</span><span class="p">[</span><span class="s1">&#39;cov&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">cov</span>
+
+        <span class="c1"># TODO: add the walk-back where we use the</span>
+        <span class="c1"># raw frames in case our update craps out...</span>
+
+        <span class="n">repeat</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">model_parameters</span></div>
+
+
+<div class="viewcode-block" id="em_get_ll"><a class="viewcode-back" href="../../../moseq2_extract.extract.html#moseq2_extract.extract.track.em_get_ll">[docs]</a><span class="k">def</span> <span class="nf">em_get_ll</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">cov</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns likelihoods for each frame given tracker parameters</span>
+<span class="sd">    Args:</span>
+<span class="sd">        frames (3d numpy array): depth frames</span>
+<span class="sd">        mean (2d numpy array): frames x d, mean estimates</span>
+<span class="sd">        cov (3d numpy array): frames x d x d, covariance estimates</span>
+<span class="sd">        progress_bar (bool): use a progress bar</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        ll (3d numpy array): frames x rows x columns, log likelihood of all pixels in each frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">xx</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">yy</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+
+    <span class="n">nframes</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">ll</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">frames</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nframes</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">progress_bar</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Computing EM likelihoods&#39;</span><span class="p">):</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">coords</span><span class="p">,</span> <span class="n">frames</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+        <span class="n">ll</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">mean</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">cov</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">ll</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">moseq2-extract</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../moseq2_extract.html">moseq2_extract package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

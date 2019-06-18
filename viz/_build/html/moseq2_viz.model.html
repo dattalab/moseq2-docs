@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_viz.model package &#8212; moseq2-viz  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="moseq2_viz.scalars package" href="moseq2_viz.scalars.html" />
+    <link rel="prev" title="moseq2_viz.io package" href="moseq2_viz.io.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="moseq2-viz-model-package">
+<h1>moseq2_viz.model package<a class="headerlink" href="#moseq2-viz-model-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-moseq2_viz.model.dist">
+<span id="moseq2-viz-model-dist-module"></span><h2>moseq2_viz.model.dist module<a class="headerlink" href="#module-moseq2_viz.model.dist" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_viz.model.dist.get_behavioral_distance">
+<code class="sig-prename descclassname">moseq2_viz.model.dist.</code><code class="sig-name descname">get_behavioral_distance</code><span class="sig-paren">(</span><em class="sig-param">index, model_file, whiten='all', distances=['ar[init]', 'scalars'], max_syllable=None, resample_idx=-1, dist_options={}, sort_labels_by_usage=True, count='usage'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/dist.html#get_behavioral_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.dist.get_behavioral_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.dist.get_behavioral_distance_ar">
+<code class="sig-prename descclassname">moseq2_viz.model.dist.</code><code class="sig-name descname">get_behavioral_distance_ar</code><span class="sig-paren">(</span><em class="sig-param">ar_mat</em>, <em class="sig-param">init_point=None</em>, <em class="sig-param">sim_points=10</em>, <em class="sig-param">max_syllable=40</em>, <em class="sig-param">dist='correlation'</em>, <em class="sig-param">parallel=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/dist.html#get_behavioral_distance_ar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.dist.get_behavioral_distance_ar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.dist.get_init_points">
+<code class="sig-prename descclassname">moseq2_viz.model.dist.</code><code class="sig-name descname">get_init_points</code><span class="sig-paren">(</span><em class="sig-param">pca_scores</em>, <em class="sig-param">model_labels</em>, <em class="sig-param">max_syllable=40</em>, <em class="sig-param">nlags=3</em>, <em class="sig-param">npcs=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/dist.html#get_init_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.dist.get_init_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.dist.reformat_dtw_distances">
+<code class="sig-prename descclassname">moseq2_viz.model.dist.</code><code class="sig-name descname">reformat_dtw_distances</code><span class="sig-paren">(</span><em class="sig-param">full_mat</em>, <em class="sig-param">nsyllables</em>, <em class="sig-param">rescale=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/dist.html#reformat_dtw_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.dist.reformat_dtw_distances" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_viz.model.util">
+<span id="moseq2-viz-model-util-module"></span><h2>moseq2_viz.model.util module<a class="headerlink" href="#module-moseq2_viz.model.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_viz.model.util.calculate_label_durations">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">calculate_label_durations</code><span class="sig-paren">(</span><em class="sig-param">label_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#calculate_label_durations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.calculate_label_durations" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.calculate_syllable_usage">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">calculate_syllable_usage</code><span class="sig-paren">(</span><em class="sig-param">labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#calculate_syllable_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.calculate_syllable_usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.compress_label_sequence">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">compress_label_sequence</code><span class="sig-paren">(</span><em class="sig-param">label_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#compress_label_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.compress_label_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes repeating values from a label sequence. It assumes the first
+label is ‘-5’, which is unused for behavioral analysis, and removes it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label_arr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – either an array of labels that contains repeating values, or a</p></li>
+<li><p><strong>containing the same</strong> (<em>dict</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the compressed verion of the label array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.find_label_transitions">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">find_label_transitions</code><span class="sig-paren">(</span><em class="sig-param">label_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#find_label_transitions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.find_label_transitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds indices where a label transitions into another label. This
+function is cached to increase performance because it is called frequently.
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>
+:returns: indices corresponding to syllable transitions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.get_mouse_syllable_slices">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">get_mouse_syllable_slices</code><span class="sig-paren">(</span><em class="sig-param">syllable</em>, <em class="sig-param">labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#get_mouse_syllable_slices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.get_mouse_syllable_slices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a generator containing slices of <cite>syllable</cite> indices for a mouse</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="moseq2_viz.model.util.get_syllable_slices">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">get_syllable_slices</code><a class="reference internal" href="_modules/moseq2_viz/model/util.html#get_syllable_slices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.get_syllable_slices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the indices that correspond to a specific syllable for each animal in a modeling run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trim_nans</strong> – flag to use the pca scores file for removing time points that contain NaNs.</p></li>
+<li><p><strong>use if you have not already trimmed NaNs previously</strong> (<em>only</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of indices for <cite>syllable</cite> in the <cite>labels</cite> array. Each item in the list
+is a tuple of (slice, uuid, h5_file)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.get_syllable_statistics">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">get_syllable_statistics</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">fill_value=-5</em>, <em class="sig-param">max_syllable=100</em>, <em class="sig-param">count='usage'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#get_syllable_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.get_syllable_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the syllable statistics from a set of model labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list of np.array of ints</em>) – labels loaded from a model fit</p></li>
+<li><p><strong>max_syllable</strong> (<em>int</em>) – maximum syllable to consider</p></li>
+<li><p><strong>count</strong> (<em>str</em>) – how to count syllable usage, either by number of emissions (usage), or number of frames (frames)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>default dictionary of usages
+durations (defaultdict): default dictionary of durations</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>usages (defaultdict)</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load in model results and get the transition matrix combined across sessions.</p>
+<p>&gt;&gt; from moseq2_viz.model.util import parse_model_results, get_syllable_statistics
+&gt;&gt; model_results = parse_model_results(‘mymodel.p’)
+&gt;&gt; usages, durations = get_syllable_statistics(model_results[‘labels’])</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.get_transition_matrix">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">get_transition_matrix</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">max_syllable=100</em>, <em class="sig-param">normalize='bigram'</em>, <em class="sig-param">smoothing=0.0</em>, <em class="sig-param">combine=False</em>, <em class="sig-param">disable_output=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#get_transition_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.get_transition_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the transition matrix from a set of model labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> (<em>list of np.array of ints</em>) – labels loaded from a model fit</p></li>
+<li><p><strong>max_syllable</strong> (<em>int</em>) – maximum syllable number to consider</p></li>
+<li><p><strong>normalize</strong> (<em>str</em>) – how to normalize transition matrix, ‘bigram’ or ‘rows’ or ‘columns’</p></li>
+<li><p><strong>smoothing</strong> (<em>float</em>) – constant to add to transition_matrix pre-normalization to smooth counts</p></li>
+<li><p><strong>combine</strong> (<em>bool</em>) – compute a separate transition matrix for each element (False)
+or combine across all arrays in the list (True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>list of 2d np.arrays that represent the transitions</dt><dd><p>from syllable i (row) to syllable j (column)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>transition_matrix</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Load in model results and get the transition matrix combined across sessions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">moseq2_viz.model.util</span> <span class="k">import</span> <span class="n">parse_model_results</span><span class="p">,</span> <span class="n">get_transition_matrix</span>
+<span class="n">model_results</span> <span class="o">=</span> <span class="n">parse_model_results</span><span class="p">(</span><span class="s1">&#39;mymodel.p&#39;</span><span class="p">)</span>
+<span class="n">transition_matrix</span> <span class="o">=</span> <span class="n">get_transition_matrix</span><span class="p">(</span><span class="n">model_results</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">],</span> <span class="n">combine</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.labels_to_changepoints">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">labels_to_changepoints</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">fs=30.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#labels_to_changepoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.labels_to_changepoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the transition matrix from a set of model labels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> (<em>list of np.array of ints</em>) – labels loaded from a model fit</p></li>
+<li><p><strong>fs</strong> (<em>float</em>) – sampling rate of camera</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of block durations per element in labels list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>cp_dist (list of np.array of floats)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Load in model results and get the changepoint distribution:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">moseq2_viz.model.util</span> <span class="k">import</span> <span class="n">parse_model_results</span><span class="p">,</span> <span class="n">labels_to_changepoints</span>
+<span class="n">model_results</span> <span class="o">=</span> <span class="n">parse_model_results</span><span class="p">(</span><span class="s1">&#39;mymodel.p&#39;</span><span class="p">)</span>
+<span class="n">cp_dist</span> <span class="o">=</span> <span class="n">labels_to_changepoints</span><span class="p">(</span><span class="n">model_results</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.normalize_pcs">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">normalize_pcs</code><span class="sig-paren">(</span><em class="sig-param">pca_scores</em>, <em class="sig-param">method='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#normalize_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.normalize_pcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize PC scores. Options are: demean, zscore, ind-zscore.
+demean: subtract the mean from each score
+zscore: perform a zscore across all animals. each PC is zscored independently
+ind-zscore: perform a zscore for each animal and each PC independently
+:type pca_scores: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code>
+:param pca_scores: a dictionary of scores where the key is the animal’s UUID
+:type method: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:param method: the type of normalization to perform (demean, zscore, ind-zscore)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dictionary of normalized PC scores</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.parse_batch_modeling">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">parse_batch_modeling</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#parse_batch_modeling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.parse_batch_modeling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.parse_model_results">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">parse_model_results</code><span class="sig-paren">(</span><em class="sig-param">model_obj</em>, <em class="sig-param">restart_idx=0</em>, <em class="sig-param">resample_idx=-1</em>, <em class="sig-param">map_uuid_to_keys=False</em>, <em class="sig-param">sort_labels_by_usage=False</em>, <em class="sig-param">count='usage'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#parse_model_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.parse_model_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a model fit and returns a dictionary of results</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_obj</strong> (<em>str</em><em> or </em><em>results returned from joblib.load</em>) – path to the model fit or a loaded model fit</p></li>
+<li><p><strong>map_uuid_to_keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – for labels, make a dictionary where each key, value pair
+contains the uuid and the labels for that session</p></li>
+<li><p><strong>sort_labels_by_usage</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – sort labels by their usages</p></li>
+<li><p><strong>count</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – how to count syllable usage, either by number of emissions (usage),
+or number of frames (frames)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary with labels and model parameters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>output_dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Load in model results:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">moseq2_viz.model.util</span> <span class="k">import</span> <span class="n">parse_model_results</span><span class="p">,</span> <span class="n">labels_to_changepoints</span>
+<span class="n">model_results</span> <span class="o">=</span> <span class="n">parse_model_results</span><span class="p">(</span><span class="s1">&#39;mymodel.p&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.relabel_by_usage">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">relabel_by_usage</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">fill_value=-5</em>, <em class="sig-param">count='usage'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#relabel_by_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.relabel_by_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-sort model labels by their usages</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – labels loaded from a model fit</p></li>
+<li><p><strong>fill_value</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – value prepended to modeling results to account for nlags</p></li>
+<li><p><strong>count</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – how to count syllable usage - either by emission number (usage) or number of frames (frames)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>labels resorted by usage</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>labels</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Load in model results and sort labels by usages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">moseq2_viz.model.util</span> <span class="k">import</span> <span class="n">parse_model_results</span><span class="p">,</span> <span class="n">relabel_by_usage</span>
+<span class="n">model_results</span> <span class="o">=</span> <span class="n">parse_model_results</span><span class="p">(</span><span class="s1">&#39;mymodel.p&#39;</span><span class="p">)</span>
+<span class="n">sorted_labels</span> <span class="o">=</span> <span class="n">relabel_by_usage</span><span class="p">(</span><span class="n">model_results</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">],</span> <span class="n">count</span><span class="o">=</span><span class="s1">&#39;usage&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.results_to_dataframe">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">results_to_dataframe</code><span class="sig-paren">(</span><em class="sig-param">model_dict, index_dict, sort=False, count='usage', normalize=True, max_syllable=40, include_meta=['SessionName', 'SubjectName', 'StartTime']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#results_to_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.results_to_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.retrieve_pcs_from_slices">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">retrieve_pcs_from_slices</code><span class="sig-paren">(</span><em class="sig-param">slices</em>, <em class="sig-param">pca_scores</em>, <em class="sig-param">max_dur=60</em>, <em class="sig-param">min_dur=3</em>, <em class="sig-param">max_samples=100</em>, <em class="sig-param">npcs=10</em>, <em class="sig-param">subsampling=None</em>, <em class="sig-param">remove_offset=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#retrieve_pcs_from_slices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.retrieve_pcs_from_slices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.simulate_ar_trajectory">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">simulate_ar_trajectory</code><span class="sig-paren">(</span><em class="sig-param">ar_mat</em>, <em class="sig-param">init_points=None</em>, <em class="sig-param">sim_points=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#simulate_ar_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.simulate_ar_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.sort_batch_results">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">sort_batch_results</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">averaging=True</em>, <em class="sig-param">filenames=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#sort_batch_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.sort_batch_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="moseq2_viz.model.util.syllable_slices_from_dict">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">syllable_slices_from_dict</code><a class="reference internal" href="_modules/moseq2_viz/model/util.html#syllable_slices_from_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.syllable_slices_from_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_viz.model.util.whiten_pcs">
+<code class="sig-prename descclassname">moseq2_viz.model.util.</code><code class="sig-name descname">whiten_pcs</code><span class="sig-paren">(</span><em class="sig-param">pca_scores</em>, <em class="sig-param">method='all'</em>, <em class="sig-param">center=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/model/util.html#whiten_pcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.model.util.whiten_pcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whiten PC scores using Cholesky whitening</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pca_scores</strong> (<em>dict</em>) – dictionary where values are pca_scores (2d np arrays)</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – ‘all’ to whiten using the covariance estimated from all keys, or ‘each’ to whiten each separately</p></li>
+<li><p><strong>center</strong> (<em>bool</em>) – whether or not to center the data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of whitened pc scores</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>whitened_scores (dict)</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Load in pca_scores and whiten</p>
+<p>&gt;&gt; from moseq2_viz.util import h5_to_dict
+&gt;&gt; from moseq2_viz.model.util import whiten_pcs
+&gt;&gt; pca_scores = h5_to_dict(‘pca_scores.h5’, ‘/scores’)
+&gt;&gt; whitened_scores = whiten_pcs(pca_scores, method=’all’)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_viz.model">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-moseq2_viz.model" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">moseq2-viz</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="moseq2_viz.html">moseq2_viz package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="moseq2_viz.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="moseq2_viz.info.html">moseq2_viz.info package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_viz.io.html">moseq2_viz.io package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">moseq2_viz.model package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_viz.model.dist">moseq2_viz.model.dist module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_viz.model.util">moseq2_viz.model.util module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-moseq2_viz.model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_viz.scalars.html">moseq2_viz.scalars package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz.cli">moseq2_viz.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz.util">moseq2_viz.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz.viz">moseq2_viz.viz module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_viz.html#module-moseq2_viz">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="moseq2_viz.html">moseq2_viz package</a><ul>
+      <li>Previous: <a href="moseq2_viz.io.html" title="previous chapter">moseq2_viz.io package</a></li>
+      <li>Next: <a href="moseq2_viz.scalars.html" title="next chapter">moseq2_viz.scalars package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/moseq2_viz.model.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

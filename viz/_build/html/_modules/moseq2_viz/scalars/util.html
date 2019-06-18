@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_viz.scalars.util &#8212; moseq2-viz  documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for moseq2_viz.scalars.util</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tqdm</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">cytoolz</span> <span class="k">import</span> <span class="n">keyfilter</span><span class="p">,</span> <span class="n">itemfilter</span><span class="p">,</span> <span class="n">merge_with</span><span class="p">,</span> <span class="n">curry</span><span class="p">,</span> <span class="n">valmap</span><span class="p">,</span> <span class="n">get</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">starmap</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">moseq2_viz.util</span> <span class="k">import</span> <span class="p">(</span><span class="n">h5_to_dict</span><span class="p">,</span> <span class="n">strided_app</span><span class="p">,</span> <span class="n">load_timestamps</span><span class="p">,</span> <span class="n">read_yaml</span><span class="p">,</span>
+                             <span class="n">h5_filepath_from_sorted</span><span class="p">,</span> <span class="n">get_timestamps_from_h5</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">moseq2_viz.model.util</span> <span class="k">import</span> <span class="n">parse_model_results</span><span class="p">,</span> <span class="n">_get_transitions</span><span class="p">,</span> <span class="n">relabel_by_usage</span>
+
+
+<span class="k">def</span> <span class="nf">_star_itemmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">starmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+
+<div class="viewcode-block" id="star_valmap"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.star_valmap">[docs]</a><span class="k">def</span> <span class="nf">star_valmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">starmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span></div>
+
+
+<span class="c1"># http://stackoverflow.com/questions/17832238/kinect-intrinsic-parameters-from-field-of-view/18199938#18199938</span>
+<span class="c1"># http://www.imaginativeuniversal.com/blog/post/2014/03/05/quick-reference-kinect-1-vs-kinect-2.aspx</span>
+<span class="c1"># http://smeenk.com/kinect-field-of-view-comparison/</span>
+<div class="viewcode-block" id="convert_pxs_to_mm"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.convert_pxs_to_mm">[docs]</a><span class="k">def</span> <span class="nf">convert_pxs_to_mm</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">424</span><span class="p">),</span> <span class="n">field_of_view</span><span class="o">=</span><span class="p">(</span><span class="mf">70.6</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="n">true_depth</span><span class="o">=</span><span class="mf">673.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts x, y coordinates in pixel space to mm</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cx</span> <span class="o">=</span> <span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">cy</span> <span class="o">=</span> <span class="n">resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="n">xhat</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cx</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cy</span>
+
+    <span class="n">fw</span> <span class="o">=</span> <span class="n">resolution</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">field_of_view</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="n">resolution</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">field_of_view</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">new_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+    <span class="n">new_coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">true_depth</span> <span class="o">*</span> <span class="n">xhat</span> <span class="o">/</span> <span class="n">fw</span>
+    <span class="n">new_coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">true_depth</span> <span class="o">*</span> <span class="n">yhat</span> <span class="o">/</span> <span class="n">fh</span>
+
+    <span class="k">return</span> <span class="n">new_coords</span></div>
+
+
+<div class="viewcode-block" id="is_legacy"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.is_legacy">[docs]</a><span class="k">def</span> <span class="nf">is_legacy</span><span class="p">(</span><span class="n">features</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Checks a dictionary of features to see if they correspond with an older version</span>
+<span class="sd">    of moseq</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        true if the dict is from an old dataset</span>
+
+<span class="sd">    &gt;&gt;&gt; is_legacy({&#39;centroid_x&#39;: [1], &#39;area&#39;: 2})</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; is_legacy({&#39;centroid_x_mm&#39;: [1], &#39;area_mm&#39;: 2})</span>
+<span class="sd">    False</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">old_features</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;centroid_x&#39;</span><span class="p">,</span> <span class="s1">&#39;centroid_y&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;area&#39;</span><span class="p">,</span> <span class="s1">&#39;height_ave&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">old_features</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">features</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_empty_feature_dict"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.generate_empty_feature_dict">[docs]</a><span class="k">def</span> <span class="nf">generate_empty_feature_dict</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;centroid_x_px&#39;</span><span class="p">,</span> <span class="s1">&#39;centroid_y_px&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_2d_px&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_3d_px&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;width_px&#39;</span><span class="p">,</span> <span class="s1">&#39;length_px&#39;</span><span class="p">,</span> <span class="s1">&#39;area_px&#39;</span><span class="p">,</span> <span class="s1">&#39;centroid_x_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;centroid_y_mm&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;velocity_2d_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_3d_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;width_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;area_mm&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;height_ave_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_theta&#39;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_empy_arr</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">make_empy_arr</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">features</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="convert_legacy_scalars"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.convert_legacy_scalars">[docs]</a><span class="k">def</span> <span class="nf">convert_legacy_scalars</span><span class="p">(</span><span class="n">old_features</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">true_depth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">673.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Converts scalars in the legacy format to the new format, with explicit units.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        old_features (str, h5 group, or dictionary of scalars): filename, h5 group,</span>
+<span class="sd">            or dictionary of scalar values</span>
+<span class="sd">        force: force the conversion of centroid_[xy]_px into mm</span>
+<span class="sd">        true_depth:  true depth of the floor relative to the camera (673.1 mm by default)</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        features: dictionary of scalar values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_features</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;centroid_x&#39;</span> <span class="ow">in</span> <span class="n">old_features</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading scalars from h5 dataset&#39;</span><span class="p">)</span>
+        <span class="n">old_features</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">old_features</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_features</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">))</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">old_features</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading scalars from file&#39;</span><span class="p">)</span>
+        <span class="n">old_features</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">old_features</span><span class="p">,</span> <span class="s1">&#39;scalars&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;centroid_x_mm&#39;</span> <span class="ow">in</span> <span class="n">old_features</span> <span class="ow">and</span> <span class="n">force</span><span class="p">:</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;centroid_x_px&#39;</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">],</span>
+                              <span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;centroid_y_px&#39;</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]))</span>
+        <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;centroid_x_mm&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Features already converted&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;centroid_x&#39;</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">],</span>
+                              <span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;centroid_y&#39;</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]))</span>
+        <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;centroid_x&#39;</span><span class="p">])</span>
+
+    <span class="n">features</span> <span class="o">=</span> <span class="n">generate_empty_feature_dict</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+
+    <span class="n">centroid_mm</span> <span class="o">=</span> <span class="n">convert_pxs_to_mm</span><span class="p">(</span><span class="n">centroid</span><span class="p">,</span> <span class="n">true_depth</span><span class="o">=</span><span class="n">true_depth</span><span class="p">)</span>
+    <span class="n">centroid_mm_shift</span> <span class="o">=</span> <span class="n">convert_pxs_to_mm</span><span class="p">(</span><span class="n">centroid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">true_depth</span><span class="o">=</span><span class="n">true_depth</span><span class="p">)</span>
+
+    <span class="n">px_to_mm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">centroid_mm_shift</span> <span class="o">-</span> <span class="n">centroid_mm</span><span class="p">)</span>
+
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_x_px&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_y_px&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">centroid</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_x_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">centroid_mm</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_y_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">centroid_mm</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># based on the centroid of the mouse, get the mm_to_px conversion</span>
+    <span class="n">copy_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;area&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">copy_keys</span><span class="p">:</span>
+        <span class="c1"># first try to grab _px key, then default to old version name</span>
+        <span class="n">features</span><span class="p">[</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">_px&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="si">{key}</span><span class="s1">_px&#39;</span><span class="p">,</span> <span class="n">old_features</span><span class="p">,</span> <span class="n">old_features</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="s1">&#39;height_ave_mm&#39;</span> <span class="ow">in</span> <span class="n">old_features</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;height_ave_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;height_ave_mm&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;height_ave_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;height_ave&#39;</span><span class="p">]</span>
+
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;width_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;width_px&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">px_to_mm</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;length_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;length_px&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">px_to_mm</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;area_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;area_px&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">px_to_mm</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_features</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span>
+
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
+
+        <span class="n">vel_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_x_px&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">],</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_x_px&#39;</span><span class="p">])))</span>
+        <span class="n">vel_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_y_px&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">],</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_y_px&#39;</span><span class="p">])))</span>
+        <span class="n">vel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;height_ave_mm&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">],</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;height_ave_mm&#39;</span><span class="p">])))</span>
+
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;velocity_2d_px&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">vel_x</span><span class="p">,</span> <span class="n">vel_y</span><span class="p">)</span>
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;velocity_3d_px&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">vel_x</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">vel_y</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">vel_z</span><span class="p">))</span>
+
+        <span class="n">vel_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_x_mm&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">],</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_x_mm&#39;</span><span class="p">])))</span>
+        <span class="n">vel_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_y_mm&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">],</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;centroid_y_mm&#39;</span><span class="p">])))</span>
+
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;velocity_2d_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">vel_x</span><span class="p">,</span> <span class="n">vel_y</span><span class="p">)</span>
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;velocity_3d_mm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">vel_x</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">vel_y</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">vel_z</span><span class="p">))</span>
+
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;velocity_theta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">vel_y</span><span class="p">,</span> <span class="n">vel_x</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">features</span></div>
+
+
+<div class="viewcode-block" id="get_scalar_map"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.get_scalar_map">[docs]</a><span class="k">def</span> <span class="nf">get_scalar_map</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">fill_nans</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_conversion</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+    <span class="n">scalar_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">score_idx</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="s1">&#39;pca_path&#39;</span><span class="p">],</span> <span class="s1">&#39;scores_idx&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="n">scalars</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;scalars&#39;</span><span class="p">)</span>
+        <span class="n">conv_scalars</span> <span class="o">=</span> <span class="n">convert_legacy_scalars</span><span class="p">(</span><span class="n">scalars</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_conversion</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">conv_scalars</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scalars</span> <span class="o">=</span> <span class="n">conv_scalars</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">score_idx</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span>
+        <span class="n">scalar_map</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v_scl</span> <span class="ow">in</span> <span class="n">scalars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">fill_nans</span><span class="p">:</span>
+                <span class="n">scalar_map</span><span class="p">[</span><span class="n">uuid</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+                <span class="n">scalar_map</span><span class="p">[</span><span class="n">uuid</span><span class="p">][</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                <span class="n">scalar_map</span><span class="p">[</span><span class="n">uuid</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">v_scl</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">scalar_map</span><span class="p">[</span><span class="n">uuid</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_scl</span>
+
+    <span class="k">return</span> <span class="n">scalar_map</span></div>
+
+
+<div class="viewcode-block" id="get_scalar_triggered_average"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.get_scalar_triggered_average">[docs]</a><span class="k">def</span> <span class="nf">get_scalar_triggered_average</span><span class="p">(</span><span class="n">scalar_map</span><span class="p">,</span> <span class="n">model_labels</span><span class="p">,</span> <span class="n">max_syllable</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">nlags</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+                                 <span class="n">include_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;velocity_2d_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_3d_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;width_mm&#39;</span><span class="p">,</span>
+                                               <span class="s1">&#39;length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;height_ave_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">],</span>
+                                 <span class="n">zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="n">win</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nlags</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># cumulative average of PCs for nlags</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">win</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">win</span> <span class="o">=</span> <span class="n">win</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1"># cumulative average of PCs for nlags</span>
+    <span class="c1"># grab the windows where 0=syllable onset</span>
+
+    <span class="n">syll_average</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_syllable</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">include_keys</span><span class="p">:</span>
+        <span class="n">syll_average</span><span class="p">[</span><span class="n">scalar</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">max_syllable</span><span class="p">,</span> <span class="n">win</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scalar_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">model_labels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">seq_array</span><span class="p">,</span> <span class="n">locs</span> <span class="o">=</span> <span class="n">_get_transitions</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_syllable</span><span class="p">):</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="n">locs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">seq_array</span> <span class="o">==</span> <span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">include_keys</span><span class="p">:</span>
+                <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">scalar</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">scalar</span> <span class="o">==</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span>
+                    <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">)</span>
+                    <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">zscore</span><span class="p">:</span>
+                    <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">nanzscore</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">)</span>
+
+                <span class="n">padded_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">,</span> <span class="p">(</span><span class="n">win</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">win</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+                                       <span class="s1">&#39;constant&#39;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="n">win_scores</span> <span class="o">=</span> <span class="n">strided_app</span><span class="p">(</span><span class="n">padded_scores</span><span class="p">,</span> <span class="n">win</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">syll_average</span><span class="p">[</span><span class="n">scalar</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">win_scores</span><span class="p">[</span><span class="n">hits</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_syllable</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">include_keys</span><span class="p">:</span>
+            <span class="n">syll_average</span><span class="p">[</span><span class="n">scalar</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">/=</span> <span class="n">count</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">syll_average</span></div>
+
+
+<div class="viewcode-block" id="nanzscore"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.nanzscore">[docs]</a><span class="k">def</span> <span class="nf">nanzscore</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">data</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="process_scalars"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.process_scalars">[docs]</a><span class="k">def</span> <span class="nf">process_scalars</span><span class="p">(</span><span class="n">scalar_map</span><span class="p">,</span> <span class="n">include_keys</span><span class="p">,</span> <span class="n">zscore</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">scalar_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">include_keys</span><span class="p">:</span>
+            <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">scalar</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">scalar</span> <span class="o">==</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span>
+                <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">)</span>
+                <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">zscore</span><span class="p">:</span>
+                <span class="n">use_scalar</span> <span class="o">=</span> <span class="n">nanzscore</span><span class="p">(</span><span class="n">use_scalar</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">use_scalar</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">valmap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">out</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="find_and_load_feedback"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.find_and_load_feedback">[docs]</a><span class="k">def</span> <span class="nf">find_and_load_feedback</span><span class="p">(</span><span class="n">extract_path</span><span class="p">,</span> <span class="n">input_path</span><span class="p">):</span>
+    <span class="n">join</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
+    <span class="n">feedback_path</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">input_path</span><span class="p">),</span> <span class="s1">&#39;feedback_ts.txt&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">feedback_path</span><span class="p">):</span>
+        <span class="n">feedback_path</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">extract_path</span><span class="p">),</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;feedback_ts.txt&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">feedback_path</span><span class="p">):</span>
+        <span class="n">feedback_ts</span> <span class="o">=</span> <span class="n">load_timestamps</span><span class="p">(</span><span class="n">feedback_path</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">feedback_status</span> <span class="o">=</span> <span class="n">load_timestamps</span><span class="p">(</span><span class="n">feedback_path</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">feedback_ts</span><span class="p">,</span> <span class="n">feedback_status</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Could not find feedback file for </span><span class="si">{extract_path}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<span class="k">def</span> <span class="nf">_pca_matches_labels</span><span class="p">(</span><span class="n">pca</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Make sure that the number of frames in the pca dataset matches the</span>
+<span class="sd">    number of frames in the assigned labels&#39;&#39;&#39;</span> 
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">pca</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="remove_nans_from_labels"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.remove_nans_from_labels">[docs]</a><span class="k">def</span> <span class="nf">remove_nans_from_labels</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Removes the frames from `labels` where `idx` has NaNs in it&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="scalars_to_dataframe"><a class="viewcode-back" href="../../../moseq2_viz.scalars.html#moseq2_viz.scalars.util.scalars_to_dataframe">[docs]</a><span class="k">def</span> <span class="nf">scalars_to_dataframe</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">include_keys</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SessionName&#39;</span><span class="p">,</span> <span class="s1">&#39;SubjectName&#39;</span><span class="p">,</span> <span class="s1">&#39;StartTime&#39;</span><span class="p">],</span>
+                         <span class="n">include_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disable_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">include_feedback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force_conversion</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Generates a dataframe containing scalar values over the course of a recording session.</span>
+<span class="sd">    If a model string is included, then return only animals that were included in the model</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        index: a sorted_index generated by `parse_index` or `get_sorted_index`</span>
+<span class="sd">        include_keys: a list of other moseq related keys to include in the dataframe</span>
+<span class="sd">        include_model (str): path to an existing moseq model</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># instantiate scalar_dict as a defaultdict</span>
+    <span class="n">scalar_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span>
+    <span class="n">uuids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">files</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c1"># use dset from first animal to generate a list of scalars</span>
+    <span class="n">dset</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">h5_filepath_from_sorted</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">uuids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]),</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;scalars&#39;</span><span class="p">)</span>
+
+    <span class="c1"># only convert if the dataset is legacy and conversion is forced</span>
+    <span class="k">if</span> <span class="n">is_legacy</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_conversion</span><span class="p">:</span>
+        <span class="n">dset</span> <span class="o">=</span> <span class="n">convert_legacy_scalars</span><span class="p">(</span><span class="n">dset</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_conversion</span><span class="p">)</span>
+
+    <span class="c1"># generate a list of scalars</span>
+    <span class="n">scalar_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dset</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c1"># get model labels for UUIDs if a model was supplied</span>
+    <span class="k">if</span> <span class="n">include_model</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">include_model</span><span class="p">):</span>
+        <span class="n">mdl</span> <span class="o">=</span> <span class="n">parse_model_results</span><span class="p">(</span><span class="n">include_model</span><span class="p">,</span> <span class="n">sort_labels_by_usage</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_uuid_to_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">mdl</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>
+        <span class="c1"># we need to call these functions here so we don&#39;t filter out data before relabelling</span>
+        <span class="n">usage</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">relabel_by_usage</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="s1">&#39;usage&#39;</span><span class="p">)</span>
+        <span class="n">frames</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">relabel_by_usage</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="s1">&#39;frames&#39;</span><span class="p">)</span>
+
+        <span class="c1"># get pca score indices</span>
+        <span class="n">scores_idx</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="s1">&#39;pca_path&#39;</span><span class="p">],</span> <span class="s1">&#39;scores_idx&#39;</span><span class="p">)</span>
+        <span class="c1"># only include labels with the same number of frames as PCA</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">itemfilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">_pca_matches_labels</span><span class="p">(</span><span class="n">scores_idx</span><span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">mdl</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">])</span>
+
+        <span class="n">labelfilter</span> <span class="o">=</span> <span class="n">curry</span><span class="p">(</span><span class="n">keyfilter</span><span class="p">)(</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="c1"># filter the relabeled dictionaries too</span>
+        <span class="n">usage</span> <span class="o">=</span> <span class="n">labelfilter</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">labelfilter</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+        <span class="c1"># filter the pca scores to match labels</span>
+        <span class="n">scores_idx</span> <span class="o">=</span> <span class="n">labelfilter</span><span class="p">(</span><span class="n">scores_idx</span><span class="p">)</span>
+
+        <span class="c1"># make function to merge syllables with the syll scores</span>
+        <span class="k">def</span> <span class="nf">merger</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">merge_with</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">scores_idx</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+        <span class="c1"># use the scores to remove the nans</span>
+        <span class="n">usage</span> <span class="o">=</span> <span class="n">star_valmap</span><span class="p">(</span><span class="n">remove_nans_from_labels</span><span class="p">,</span> <span class="n">merger</span><span class="p">(</span><span class="n">usage</span><span class="p">))</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">star_valmap</span><span class="p">(</span><span class="n">remove_nans_from_labels</span><span class="p">,</span> <span class="n">merger</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">star_valmap</span><span class="p">(</span><span class="n">remove_nans_from_labels</span><span class="p">,</span> <span class="n">merger</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
+        <span class="c1"># only include extractions that were modeled and fit the above criteria</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">keyfilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">files</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">disable</span><span class="o">=</span><span class="n">disable_output</span><span class="p">):</span>
+
+        <span class="n">pth</span> <span class="o">=</span> <span class="n">h5_filepath_from_sorted</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">dset</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">pth</span><span class="p">,</span> <span class="s1">&#39;scalars&#39;</span><span class="p">)</span>
+
+        <span class="n">timestamps</span> <span class="o">=</span> <span class="n">get_timestamps_from_h5</span><span class="p">(</span><span class="n">pth</span><span class="p">)</span>
+
+        <span class="c1"># get extraction parameters for this h5 file</span>
+        <span class="n">dct</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;parameters&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">include_feedback</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;feedback_timestamps&#39;</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">:</span>
+                <span class="n">ts_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;feedback_timestamps&#39;</span><span class="p">])</span>
+                <span class="n">feedback_ts</span><span class="p">,</span> <span class="n">feedback_status</span> <span class="o">=</span> <span class="n">ts_data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ts_data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">feedback_ts</span><span class="p">,</span> <span class="n">feedback_status</span> <span class="o">=</span> <span class="n">find_and_load_feedback</span><span class="p">(</span><span class="n">pth</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;input_file&#39;</span><span class="p">])</span>
+
+        <span class="c1"># convert scalar names into modern format if they are legacy</span>
+        <span class="k">if</span> <span class="n">is_legacy</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_conversion</span><span class="p">:</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">convert_legacy_scalars</span><span class="p">(</span><span class="n">dset</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force_conversion</span><span class="p">)</span>
+
+        <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dset</span><span class="p">[</span><span class="n">scalar_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nframes</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timestamps not equal to number of frames for </span><span class="si">{pth}</span><span class="s1">, skipping&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># add scalar data for this animal</span>
+        <span class="k">for</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">scalar_names</span><span class="p">:</span>
+            <span class="n">scalar_dict</span><span class="p">[</span><span class="n">scalar</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dset</span><span class="p">[</span><span class="n">scalar</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="c1"># add metadata from `include_keys`</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">include_keys</span><span class="p">:</span>
+            <span class="c1"># every frame should have the same amount of metadata</span>
+            <span class="n">scalar_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]]</span> <span class="o">*</span> <span class="n">nframes</span>
+
+        <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;group&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;group&#39;</span><span class="p">]]</span> <span class="o">*</span> <span class="n">nframes</span>
+        <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;uuid&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">nframes</span>
+
+        <span class="k">if</span> <span class="n">include_feedback</span> <span class="ow">and</span> <span class="n">feedback_ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">timestamps</span><span class="p">:</span>
+                <span class="n">hit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">feedback_ts</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;feedback_status&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="n">feedback_status</span><span class="p">[</span><span class="n">hit</span><span class="p">]]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;feedback_status&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">include_feedback</span><span class="p">:</span>
+            <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;feedback_status&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">nframes</span>
+
+        <span class="k">if</span> <span class="n">include_model</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">include_model</span><span class="p">):</span>
+            <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;model_label&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">labels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;model_label (sort=usage)&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">usage</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">scalar_dict</span><span class="p">[</span><span class="s1">&#39;model_label (sort=frames)&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">frames</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="c1"># turn each key in scalar_names into a numpy array</span>
+    <span class="k">for</span> <span class="n">scalar</span> <span class="ow">in</span> <span class="n">scalar_names</span><span class="p">:</span>
+        <span class="n">scalar_dict</span><span class="p">[</span><span class="n">scalar</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scalar_dict</span><span class="p">[</span><span class="n">scalar</span><span class="p">])</span>
+
+    <span class="c1"># return scalar_dict</span>
+    <span class="n">scalar_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scalar_dict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">scalar_df</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">moseq2-viz</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Command-line interface:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">MoSeq2-viz - the command-line interface</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../moseq2_viz.html">moseq2_viz package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

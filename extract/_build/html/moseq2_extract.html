@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_extract package &#8212; moseq2-extract  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="moseq2_extract.extract package" href="moseq2_extract.extract.html" />
+    <link rel="prev" title="Welcome to moseq2_extract’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="moseq2-extract-package">
+<h1>moseq2_extract package<a class="headerlink" href="#moseq2-extract-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="moseq2_extract.extract.html">moseq2_extract.extract package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.extract.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.extract.html#module-moseq2_extract.extract.extract">moseq2_extract.extract.extract module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.extract.html#module-moseq2_extract.extract.proc">moseq2_extract.extract.proc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.extract.html#module-moseq2_extract.extract.roi">moseq2_extract.extract.roi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.extract.html#module-moseq2_extract.extract.track">moseq2_extract.extract.track module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.extract.html#module-moseq2_extract.extract">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="moseq2_extract.io.html">moseq2_extract.io package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.io.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.io.html#module-moseq2_extract.io.image">moseq2_extract.io.image module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.io.html#module-moseq2_extract.io.video">moseq2_extract.io.video module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moseq2_extract.io.html#module-moseq2_extract.io">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-moseq2_extract.cli">
+<span id="moseq2-extract-cli-module"></span><h2>moseq2_extract.cli module<a class="headerlink" href="#module-moseq2_extract.cli" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_extract.cli.new_init">
+<code class="sig-prename descclassname">moseq2_extract.cli.</code><code class="sig-name descname">new_init</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/cli.html#new_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.cli.new_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="section" id="moseq2-extract">
+<h3>moseq2-extract<a class="headerlink" href="#moseq2-extract" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract <span class="o">[</span>OPTIONS<span class="o">]</span> COMMAND <span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<div class="section" id="moseq2-extract-convert-raw-to-avi">
+<h4>convert-raw-to-avi<a class="headerlink" href="#moseq2-extract-convert-raw-to-avi" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract convert-raw-to-avi <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT_FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-convert-raw-to-avi-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-convert-raw-to-avi-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to output file</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-convert-raw-to-avi-b">
+<code class="sig-name descname">-b</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--chunk-size</code><code class="sig-prename descclassname"> &lt;chunk_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-convert-raw-to-avi-b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chunk size  [default: 3000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-convert-raw-to-avi-fps">
+<code class="sig-name descname">--fps</code><code class="sig-prename descclassname"> &lt;fps&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-convert-raw-to-avi-fps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video FPS  [default: 30]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-convert-raw-to-avi-delete">
+<code class="sig-name descname">--delete</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-convert-raw-to-avi-delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete raw file if encoding is sucessful  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-convert-raw-to-avi-t">
+<code class="sig-name descname">-t</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--threads</code><code class="sig-prename descclassname"> &lt;threads&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-convert-raw-to-avi-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of threads for encoding  [default: 3]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-convert-raw-to-avi-arg-input-file">
+<code class="sig-name descname">INPUT_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-convert-raw-to-avi-arg-input-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-extract-copy-slice">
+<h4>copy-slice<a class="headerlink" href="#moseq2-extract-copy-slice" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract copy-slice <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT_FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to output file</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-b">
+<code class="sig-name descname">-b</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--chunk-size</code><code class="sig-prename descclassname"> &lt;chunk_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chunk size  [default: 3000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-c">
+<code class="sig-name descname">-c</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--copy-slice</code><code class="sig-prename descclassname"> &lt;copy_slice&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slice to copy  [default: 0, 1000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-fps">
+<code class="sig-name descname">--fps</code><code class="sig-prename descclassname"> &lt;fps&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-fps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video FPS  [default: 30]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-delete">
+<code class="sig-name descname">--delete</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete raw file if encoding is sucessful  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-t">
+<code class="sig-name descname">-t</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--threads</code><code class="sig-prename descclassname"> &lt;threads&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of threads for encoding  [default: 3]</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-copy-slice-arg-input-file">
+<code class="sig-name descname">INPUT_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-copy-slice-arg-input-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-extract-download-flip-file">
+<h4>download-flip-file<a class="headerlink" href="#moseq2-extract-download-flip-file" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract download-flip-file <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-download-flip-file-output-dir">
+<code class="sig-name descname">--output-dir</code><code class="sig-prename descclassname"> &lt;output_dir&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-download-flip-file-output-dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temp storage  [default: /Users/wgillis/moseq2]</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-extract-extract">
+<h4>extract<a class="headerlink" href="#moseq2-extract-extract" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract extract <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT_FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-c">
+<code class="sig-name descname">-c</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--crop-size</code><code class="sig-prename descclassname"> &lt;crop_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Width and height of cropped mouse image  [default: 80, 80]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-dilate">
+<code class="sig-name descname">--bg-roi-dilate</code><code class="sig-prename descclassname"> &lt;bg_roi_dilate&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-dilate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the mask dilation (to include environment walls)  [default: 10, 10]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-shape">
+<code class="sig-name descname">--bg-roi-shape</code><code class="sig-prename descclassname"> &lt;bg_roi_shape&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape to use for the mask dilation (ellipse or rect)  [default: ellipse]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-index">
+<code class="sig-name descname">--bg-roi-index</code><code class="sig-prename descclassname"> &lt;bg_roi_index&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of which background mask(s) to use  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-weights">
+<code class="sig-name descname">--bg-roi-weights</code><code class="sig-prename descclassname"> &lt;bg_roi_weights&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Feature weighting (area, extent, dist) of the background mask  [default: 1, 0.1, 1]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-depth-range">
+<code class="sig-name descname">--bg-roi-depth-range</code><code class="sig-prename descclassname"> &lt;bg_roi_depth_range&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-depth-range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Range to search for floor of arena (in mm)  [default: 650, 750]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-gradient-filter">
+<code class="sig-name descname">--bg-roi-gradient-filter</code><code class="sig-prename descclassname"> &lt;bg_roi_gradient_filter&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-gradient-filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exclude walls with gradient filtering  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-gradient-threshold">
+<code class="sig-name descname">--bg-roi-gradient-threshold</code><code class="sig-prename descclassname"> &lt;bg_roi_gradient_threshold&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-gradient-threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gradient must be &lt; this to include points  [default: 3000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-gradient-kernel">
+<code class="sig-name descname">--bg-roi-gradient-kernel</code><code class="sig-prename descclassname"> &lt;bg_roi_gradient_kernel&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-gradient-kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel size for Sobel gradient filtering  [default: 7]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-bg-roi-fill-holes">
+<code class="sig-name descname">--bg-roi-fill-holes</code><code class="sig-prename descclassname"> &lt;bg_roi_fill_holes&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-bg-roi-fill-holes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill holes in ROI  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-min-height">
+<code class="sig-name descname">--min-height</code><code class="sig-prename descclassname"> &lt;min_height&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-min-height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Min mouse height from floor (mm)  [default: 10]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-max-height">
+<code class="sig-name descname">--max-height</code><code class="sig-prename descclassname"> &lt;max_height&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-max-height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max mouse height from floor (mm)  [default: 100]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-fps">
+<code class="sig-name descname">--fps</code><code class="sig-prename descclassname"> &lt;fps&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-fps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frame rate of camera  [default: 30]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-flip-classifier">
+<code class="sig-name descname">--flip-classifier</code><code class="sig-prename descclassname"> &lt;flip_classifier&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-flip-classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of the flip classifier used to properly orient the mouse (.pkl file)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-flip-classifier-smoothing">
+<code class="sig-name descname">--flip-classifier-smoothing</code><code class="sig-prename descclassname"> &lt;flip_classifier_smoothing&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-flip-classifier-smoothing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of frames to smooth flip classifier probabilities  [default: 51]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-use-tracking-model">
+<code class="sig-name descname">--use-tracking-model</code><code class="sig-prename descclassname"> &lt;use_tracking_model&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-use-tracking-model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use an expectation-maximization style model to aid mouse tracking. Useful for data with cables  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tracking-model-ll-threshold">
+<code class="sig-name descname">--tracking-model-ll-threshold</code><code class="sig-prename descclassname"> &lt;tracking_model_ll_threshold&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tracking-model-ll-threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Threshold on log-likelihood for pixels to use for update during tracking  [default: -100]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tracking-model-mask-threshold">
+<code class="sig-name descname">--tracking-model-mask-threshold</code><code class="sig-prename descclassname"> &lt;tracking_model_mask_threshold&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tracking-model-mask-threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Threshold on log-likelihood to include pixels for centroid and angle calculation  [default: -16]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tracking-model-ll-clip">
+<code class="sig-name descname">--tracking-model-ll-clip</code><code class="sig-prename descclassname"> &lt;tracking_model_ll_clip&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tracking-model-ll-clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clip log-likelihoods below this value  [default: -100]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tracking-model-segment">
+<code class="sig-name descname">--tracking-model-segment</code><code class="sig-prename descclassname"> &lt;tracking_model_segment&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tracking-model-segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment likelihood mask from tracking model  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tracking-model-init">
+<code class="sig-name descname">--tracking-model-init</code><code class="sig-prename descclassname"> &lt;tracking_model_init&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tracking-model-init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for tracking model initialization  [default: raw]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-cable-filter-iters">
+<code class="sig-name descname">--cable-filter-iters</code><code class="sig-prename descclassname"> &lt;cable_filter_iters&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-cable-filter-iters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of cable filter iterations  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-cable-filter-shape">
+<code class="sig-name descname">--cable-filter-shape</code><code class="sig-prename descclassname"> &lt;cable_filter_shape&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-cable-filter-shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cable filter shape (rectangle or ellipse)  [default: rectangle]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-cable-filter-size">
+<code class="sig-name descname">--cable-filter-size</code><code class="sig-prename descclassname"> &lt;cable_filter_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-cable-filter-size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cable filter size (in pixels)  [default: 5, 5]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tail-filter-iters">
+<code class="sig-name descname">--tail-filter-iters</code><code class="sig-prename descclassname"> &lt;tail_filter_iters&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tail-filter-iters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of tail filter iterations  [default: 1]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tail-filter-size">
+<code class="sig-name descname">--tail-filter-size</code><code class="sig-prename descclassname"> &lt;tail_filter_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tail-filter-size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tail filter size  [default: 9, 9]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-tail-filter-shape">
+<code class="sig-name descname">--tail-filter-shape</code><code class="sig-prename descclassname"> &lt;tail_filter_shape&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-tail-filter-shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tail filter shape  [default: ellipse]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-s">
+<code class="sig-name descname">-s</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--spatial-filter-size</code><code class="sig-prename descclassname"> &lt;spatial_filter_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Space prefilter kernel (median filter, must be odd)  [default: 3]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-t">
+<code class="sig-name descname">-t</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--temporal-filter-size</code><code class="sig-prename descclassname"> &lt;temporal_filter_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time prefilter kernel (median filter, must be odd)  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-chunk-size">
+<code class="sig-name descname">--chunk-size</code><code class="sig-prename descclassname"> &lt;chunk_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-chunk-size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of frames for each processing iteration  [default: 1000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-chunk-overlap">
+<code class="sig-name descname">--chunk-overlap</code><code class="sig-prename descclassname"> &lt;chunk_overlap&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-chunk-overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frames overlapped in each chunk. Useful for cable tracking  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-output-dir">
+<code class="sig-name descname">--output-dir</code><code class="sig-prename descclassname"> &lt;output_dir&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-output-dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output directory to save the results h5 file</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-write-movie">
+<code class="sig-name descname">--write-movie</code><code class="sig-prename descclassname"> &lt;write_movie&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-write-movie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a results output movie including an extracted mouse  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-use-plane-bground">
+<code class="sig-name descname">--use-plane-bground</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-use-plane-bground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use a plane fit for the background. Useful for mice that don’t move much  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-frame-dtype">
+<code class="sig-name descname">--frame-dtype</code><code class="sig-prename descclassname"> &lt;frame_dtype&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-frame-dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data type for processed frames  [default: uint8]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-centroid-hampel-span">
+<code class="sig-name descname">--centroid-hampel-span</code><code class="sig-prename descclassname"> &lt;centroid_hampel_span&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-centroid-hampel-span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hampel filter span  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-centroid-hampel-sig">
+<code class="sig-name descname">--centroid-hampel-sig</code><code class="sig-prename descclassname"> &lt;centroid_hampel_sig&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-centroid-hampel-sig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hampel filter sig  [default: 3]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-angle-hampel-span">
+<code class="sig-name descname">--angle-hampel-span</code><code class="sig-prename descclassname"> &lt;angle_hampel_span&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-angle-hampel-span" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle filter span  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-angle-hampel-sig">
+<code class="sig-name descname">--angle-hampel-sig</code><code class="sig-prename descclassname"> &lt;angle_hampel_sig&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-angle-hampel-sig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle filter sig  [default: 3]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-model-smoothing-clips">
+<code class="sig-name descname">--model-smoothing-clips</code><code class="sig-prename descclassname"> &lt;model_smoothing_clips&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-model-smoothing-clips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model smoothing clips  [default: 0, 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-frame-trim">
+<code class="sig-name descname">--frame-trim</code><code class="sig-prename descclassname"> &lt;frame_trim&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-frame-trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frames to trim from beginning and end of data  [default: 0, 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-compress">
+<code class="sig-name descname">--compress</code><code class="sig-prename descclassname"> &lt;compress&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-compress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert .dat to .avi after successful extraction  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-compress-chunk-size">
+<code class="sig-name descname">--compress-chunk-size</code><code class="sig-prename descclassname"> &lt;compress_chunk_size&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-compress-chunk-size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chunk size for .avi compression  [default: 3000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-compress-threads">
+<code class="sig-name descname">--compress-threads</code><code class="sig-prename descclassname"> &lt;compress_threads&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-compress-threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of threads for encoding  [default: 3]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-config-file">
+<code class="sig-name descname">--config-file</code><code class="sig-prename descclassname"> &lt;config_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-config-file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-extract-arg-input-file">
+<code class="sig-name descname">INPUT_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-extract-arg-input-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-extract-find-roi">
+<h4>find-roi<a class="headerlink" href="#moseq2-extract-find-roi" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract find-roi <span class="o">[</span>OPTIONS<span class="o">]</span> INPUT_FILE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-dilate">
+<code class="sig-name descname">--bg-roi-dilate</code><code class="sig-prename descclassname"> &lt;bg_roi_dilate&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-dilate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of strel to dilate roi  [default: 10, 10]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-shape">
+<code class="sig-name descname">--bg-roi-shape</code><code class="sig-prename descclassname"> &lt;bg_roi_shape&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape to use to dilate roi (ellipse or rect)  [default: ellipse]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-index">
+<code class="sig-name descname">--bg-roi-index</code><code class="sig-prename descclassname"> &lt;bg_roi_index&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index of roi to use  [default: 0]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-weights">
+<code class="sig-name descname">--bg-roi-weights</code><code class="sig-prename descclassname"> &lt;bg_roi_weights&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>ROI feature weighting (area, extent, dist)  [default: 1, 0.1, 1]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-depth-range">
+<code class="sig-name descname">--bg-roi-depth-range</code><code class="sig-prename descclassname"> &lt;bg_roi_depth_range&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-depth-range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Range to search for floor of arena (in mm)  [default: 650, 750]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-gradient-filter">
+<code class="sig-name descname">--bg-roi-gradient-filter</code><code class="sig-prename descclassname"> &lt;bg_roi_gradient_filter&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-gradient-filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exclude walls with gradient filtering  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-gradient-threshold">
+<code class="sig-name descname">--bg-roi-gradient-threshold</code><code class="sig-prename descclassname"> &lt;bg_roi_gradient_threshold&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-gradient-threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gradient must be &lt; this to include points  [default: 3000]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-gradient-kernel">
+<code class="sig-name descname">--bg-roi-gradient-kernel</code><code class="sig-prename descclassname"> &lt;bg_roi_gradient_kernel&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-gradient-kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kernel size for Sobel gradient filtering  [default: 7]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-roi-fill-holes">
+<code class="sig-name descname">--bg-roi-fill-holes</code><code class="sig-prename descclassname"> &lt;bg_roi_fill_holes&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-roi-fill-holes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill holes in ROI  [default: True]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-sort-roi-by-position">
+<code class="sig-name descname">--bg-sort-roi-by-position</code><code class="sig-prename descclassname"> &lt;bg_sort_roi_by_position&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-sort-roi-by-position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort ROIs by position  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-bg-sort-roi-by-position-max-rois">
+<code class="sig-name descname">--bg-sort-roi-by-position-max-rois</code><code class="sig-prename descclassname"> &lt;bg_sort_roi_by_position_max_rois&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-bg-sort-roi-by-position-max-rois" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max original ROIs to sort by position  [default: 2]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-output-dir">
+<code class="sig-name descname">--output-dir</code><code class="sig-prename descclassname"> &lt;output_dir&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-output-dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output directory</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-use-plane-bground">
+<code class="sig-name descname">--use-plane-bground</code><code class="sig-prename descclassname"> &lt;use_plane_bground&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-use-plane-bground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use plane fit for background  [default: False]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-config-file">
+<code class="sig-name descname">--config-file</code><code class="sig-prename descclassname"> &lt;config_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-config-file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-find-roi-arg-input-file">
+<code class="sig-name descname">INPUT_FILE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-moseq2-extract-find-roi-arg-input-file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="moseq2-extract-generate-config">
+<h4>generate-config<a class="headerlink" href="#moseq2-extract-generate-config" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>moseq2-extract generate-config <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="option">
+<dt id="cmdoption-moseq2-extract-generate-config-o">
+<code class="sig-name descname">-o</code><code class="sig-prename descclassname"></code><code class="sig-prename descclassname">, </code><code class="sig-name descname">--output-file</code><code class="sig-prename descclassname"> &lt;output_file&gt;</code><a class="headerlink" href="#cmdoption-moseq2-extract-generate-config-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>[default: config.yaml]</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+<div class="section" id="module-moseq2_extract.util">
+<span id="moseq2-extract-util-module"></span><h2>moseq2_extract.util module<a class="headerlink" href="#module-moseq2_extract.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moseq2_extract.util.click_param_annot">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">click_param_annot</code><span class="sig-paren">(</span><em class="sig-param">click_cmd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#click_param_annot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.click_param_annot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a click.Command instance, return a dict that maps option names to help strings</p>
+<p>Currently skips click.Arguments, as they do not have help strings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>click_cmd</strong> (<em>click.Command</em>) – command to introspect</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>click.Option.human_readable_name as keys; click.Option.help as values</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.command_with_config">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">command_with_config</code><span class="sig-paren">(</span><em class="sig-param">config_file_param_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#command_with_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.command_with_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.convert_pxs_to_mm">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">convert_pxs_to_mm</code><span class="sig-paren">(</span><em class="sig-param">coords</em>, <em class="sig-param">resolution=(512</em>, <em class="sig-param">424)</em>, <em class="sig-param">field_of_view=(70.6</em>, <em class="sig-param">60)</em>, <em class="sig-param">true_depth=673.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#convert_pxs_to_mm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.convert_pxs_to_mm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts x, y coordinates in pixel space to mm</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.convert_raw_to_avi_function">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">convert_raw_to_avi_function</code><span class="sig-paren">(</span><em class="sig-param">input_file</em>, <em class="sig-param">chunk_size=2000</em>, <em class="sig-param">fps=30</em>, <em class="sig-param">delete=False</em>, <em class="sig-param">threads=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#convert_raw_to_avi_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.convert_raw_to_avi_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.gen_batch_sequence">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">gen_batch_sequence</code><span class="sig-paren">(</span><em class="sig-param">nframes</em>, <em class="sig-param">chunk_size</em>, <em class="sig-param">overlap</em>, <em class="sig-param">offset=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#gen_batch_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.gen_batch_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a sequence with overlap</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.load_metadata">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">load_metadata</code><span class="sig-paren">(</span><em class="sig-param">metadata_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#load_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.load_metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.load_timestamps">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">load_timestamps</code><span class="sig-paren">(</span><em class="sig-param">timestamp_file</em>, <em class="sig-param">col=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#load_timestamps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.load_timestamps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read timestamps from space delimited text file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.save_dict_contents_to_h5">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">save_dict_contents_to_h5</code><span class="sig-paren">(</span><em class="sig-param">h5</em>, <em class="sig-param">dic</em>, <em class="sig-param">root='/'</em>, <em class="sig-param">annotations=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#save_dict_contents_to_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.save_dict_contents_to_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an dict to an h5 file, mounting at root</p>
+<p>Keys are mapped to group names recursivly</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h5</strong> (<em>h5py.File instance</em>) – h5py.file object to operate on</p></li>
+<li><p><strong>dic</strong> (<em>dict</em>) – dictionary of data to write</p></li>
+<li><p><strong>root</strong> (<em>string</em>) – group on which to add additional groups and datasets</p></li>
+<li><p><strong>annotations</strong> (<em>dict</em>) – annotation data to add to corresponding h5 datasets. Should contain same keys as dic.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.scalar_attributes">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">scalar_attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#scalar_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.scalar_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.select_strel">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">select_strel</code><span class="sig-paren">(</span><em class="sig-param">string='e'</em>, <em class="sig-param">size=(10</em>, <em class="sig-param">10)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#select_strel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.select_strel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="moseq2_extract.util.strided_app">
+<code class="sig-prename descclassname">moseq2_extract.util.</code><code class="sig-name descname">strided_app</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">L</em>, <em class="sig-param">S</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_extract/util.html#strided_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_extract.util.strided_app" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-moseq2_extract">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-moseq2_extract" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">moseq2-extract</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">moseq2_extract package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_extract.extract.html">moseq2_extract.extract package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="moseq2_extract.io.html">moseq2_extract.io package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-moseq2_extract.cli">moseq2_extract.cli module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#moseq2-extract">moseq2-extract</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#moseq2-extract-convert-raw-to-avi">convert-raw-to-avi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moseq2-extract-copy-slice">copy-slice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moseq2-extract-download-flip-file">download-flip-file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moseq2-extract-extract">extract</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moseq2-extract-find-roi">find-roi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#moseq2-extract-generate-config">generate-config</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-moseq2_extract.util">moseq2_extract.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-moseq2_extract">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to moseq2_extract’s documentation!</a></li>
+      <li>Next: <a href="moseq2_extract.extract.html" title="next chapter">moseq2_extract.extract package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/moseq2_extract.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

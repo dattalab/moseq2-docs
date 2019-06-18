@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_viz.util &#8212; moseq2-viz  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for moseq2_viz.util</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">from</span> <span class="nn">ruamel.yaml</span> <span class="k">import</span> <span class="n">YAML</span>
+<span class="kn">from</span> <span class="nn">cytoolz</span> <span class="k">import</span> <span class="n">curry</span><span class="p">,</span> <span class="n">compose</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">cytoolz.itertoolz</span> <span class="k">import</span> <span class="n">peek</span><span class="p">,</span> <span class="n">pluck</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">groupby</span>
+<span class="kn">from</span> <span class="nn">cytoolz.dicttoolz</span> <span class="k">import</span> <span class="n">valfilter</span><span class="p">,</span> <span class="n">merge_with</span><span class="p">,</span> <span class="n">dissoc</span><span class="p">,</span> <span class="n">assoc</span>
+<span class="kn">from</span> <span class="nn">cytoolz.curried</span> <span class="k">import</span> <span class="n">get_in</span><span class="p">,</span> <span class="n">keyfilter</span><span class="p">,</span> <span class="n">valmap</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
+
+
+<span class="c1"># https://gist.github.com/jaytaylor/3660565</span>
+<span class="n">_underscorer1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(.)([A-Z][a-z]+)&#39;</span><span class="p">)</span>
+<span class="n">_underscorer2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([a-z0-9])([A-Z])&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="np_cache"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.np_cache">[docs]</a><span class="k">def</span> <span class="nf">np_cache</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cached_wrapper</span><span class="p">(</span><span class="n">hashable_array</span><span class="p">):</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hashable_array</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cached_wrapper</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">array</span><span class="p">))</span>
+
+    <span class="c1"># copy lru_cache attributes over too</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_info</span> <span class="o">=</span> <span class="n">cached_wrapper</span><span class="o">.</span><span class="n">cache_info</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">cache_clear</span> <span class="o">=</span> <span class="n">cached_wrapper</span><span class="o">.</span><span class="n">cache_clear</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+<div class="viewcode-block" id="camel_to_snake"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.camel_to_snake">[docs]</a><span class="k">def</span> <span class="nf">camel_to_snake</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Converts CamelCase to snake_case</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">subbed</span> <span class="o">=</span> <span class="n">_underscorer1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1_\2&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_underscorer2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\1_\2&#39;</span><span class="p">,</span> <span class="n">subbed</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="check_video_parameters"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.check_video_parameters">[docs]</a><span class="k">def</span> <span class="nf">check_video_parameters</span><span class="p">(</span><span class="n">index</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39; Iterates through each extraction parameter file to verify extraction parameters</span>
+<span class="sd">    were the same. If they weren&#39;t this function raises a RuntimeError. Otherwise, it</span>
+<span class="sd">    will return a dictionary containing the following parameters:</span>
+<span class="sd">        crop_size, fps, max_height, min_height, resolution</span>
+<span class="sd">    Args:</span>
+<span class="sd">        index: a `sorted_index` dictionary of extraction parameters</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary with a subset of the used extraction parameters</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># define constants</span>
+    <span class="n">check_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;crop_size&#39;</span><span class="p">,</span> <span class="s1">&#39;fps&#39;</span><span class="p">,</span> <span class="s1">&#39;max_height&#39;</span><span class="p">,</span> <span class="s1">&#39;min_height&#39;</span><span class="p">]</span>
+
+    <span class="n">get_yaml</span> <span class="o">=</span> <span class="n">get_in</span><span class="p">([</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">ymls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_yaml</span><span class="p">,</span> <span class="n">index</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+    <span class="c1"># load yaml config files when needed</span>
+    <span class="n">dicts</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">read_yaml</span><span class="p">,</span> <span class="n">ymls</span><span class="p">)</span>
+    <span class="c1"># get the parameters key within each dict</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">pluck</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="n">dicts</span><span class="p">)</span>
+
+    <span class="n">first_entry</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">peek</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;resolution&#39;</span> <span class="ow">in</span> <span class="n">first_entry</span><span class="p">:</span>
+        <span class="n">check_parameters</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+
+    <span class="c1"># filter for only keys in check_parameters</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">keyfilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">check_parameters</span><span class="p">),</span> <span class="n">params</span><span class="p">)</span>
+    <span class="c1"># turn lists (in the dict values) into tuples</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">valmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">),</span> <span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># get unique parameter values</span>
+    <span class="n">vid_parameters</span> <span class="o">=</span> <span class="n">merge_with</span><span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+    <span class="n">incorrect_parameters</span> <span class="o">=</span> <span class="n">valfilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="n">vid_parameters</span><span class="p">)</span>
+
+    <span class="c1"># if there are multiple values for a parameter, raise error</span>
+    <span class="k">if</span> <span class="n">incorrect_parameters</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The following parameters are not equal &#39;</span> <span class="o">+</span>
+                           <span class="n">f</span><span class="s1">&#39;across extractions: {incorrect_parameters.keys()}&#39;</span><span class="p">)</span>
+
+    <span class="c1"># grab the first value in the set</span>
+    <span class="n">vid_parameters</span> <span class="o">=</span> <span class="n">valmap</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">vid_parameters</span><span class="p">)</span>
+
+    <span class="c1"># update resolution</span>
+    <span class="k">if</span> <span class="s1">&#39;resolution&#39;</span> <span class="ow">in</span> <span class="n">vid_parameters</span><span class="p">:</span>
+        <span class="n">vid_parameters</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">100</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vid_parameters</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vid_parameters</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">vid_parameters</span></div>
+
+
+<div class="viewcode-block" id="clean_dict"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.clean_dict">[docs]</a><span class="k">def</span> <span class="nf">clean_dict</span><span class="p">(</span><span class="n">dct</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">clean_entry</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">clean_dict</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">e</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">return</span> <span class="n">valmap</span><span class="p">(</span><span class="n">clean_entry</span><span class="p">,</span> <span class="n">dct</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_load_h5_to_dict</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="n">path</span><span class="p">],</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="c1"># only use the final path key to add to `ans`</span>
+        <span class="n">ans</span><span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">file</span><span class="p">[</span><span class="n">path</span><span class="p">][()]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">file</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+                <span class="n">ans</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="p">[()]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+                <span class="n">ans</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_load_h5_to_dict</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">ans</span>
+
+
+<div class="viewcode-block" id="h5_to_dict"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.h5_to_dict">[docs]</a><span class="k">def</span> <span class="nf">h5_to_dict</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        h5file (str or h5py.File): file path to the given h5 file or the h5 file handle</span>
+<span class="sd">        path: path to the base dataset within the h5 file</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        a dict with h5 file contents with the same path structure</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">_load_h5_to_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="p">(</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">)):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">_load_h5_to_dict</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;file input not understood - need h5 file path or file object&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="get_timestamps_from_h5"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.get_timestamps_from_h5">[docs]</a><span class="k">def</span> <span class="nf">get_timestamps_from_h5</span><span class="p">(</span><span class="n">h5file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># v0.1.3 new data format</span>
+        <span class="n">is_new</span> <span class="o">=</span> <span class="s1">&#39;timestamps&#39;</span> <span class="ow">in</span> <span class="n">f</span>
+    <span class="k">if</span> <span class="n">is_new</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s1">&#39;timestamps&#39;</span><span class="p">)[</span><span class="s1">&#39;timestamps&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="s1">&#39;metadata/timestamps&#39;</span><span class="p">)[</span><span class="s1">&#39;timestamps&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_changepoints"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.load_changepoints">[docs]</a><span class="k">def</span> <span class="nf">load_changepoints</span><span class="p">(</span><span class="n">cpfile</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">cpfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">cps</span> <span class="o">=</span> <span class="n">h5_to_dict</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;cps&#39;</span><span class="p">)</span>
+
+    <span class="n">cp_dist</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">cp_dist</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">compose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">),</span> <span class="n">cps</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cp_dist</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="load_timestamps"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.load_timestamps">[docs]</a><span class="k">def</span> <span class="nf">load_timestamps</span><span class="p">(</span><span class="n">timestamp_file</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read timestamps from space delimited text file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">timestamp_file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ts</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">col</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Timestamp file </span><span class="si">{timestamp_file}</span><span class="s1"> does not have more than one column of data&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
+
+
+<div class="viewcode-block" id="parse_index"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.parse_index">[docs]</a><span class="k">def</span> <span class="nf">parse_index</span><span class="p">(</span><span class="n">index_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39; Load an index file, and use extraction UUIDs as entries in a sorted index.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a tuple containing the loaded index file, and the index with extraction UUIDs as entries</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">join</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
+    <span class="n">index_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">index_file</span><span class="p">)</span>
+
+    <span class="n">index</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">index_file</span><span class="p">)</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span>
+
+    <span class="n">sorted_index</span> <span class="o">=</span> <span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+    <span class="c1"># grab first entry in list, which is a dict</span>
+    <span class="n">sorted_index</span> <span class="o">=</span> <span class="n">valmap</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">sorted_index</span><span class="p">)</span>
+    <span class="c1"># remove redundant uuid entry</span>
+    <span class="n">sorted_index</span> <span class="o">=</span> <span class="n">valmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">dissoc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;uuid&#39;</span><span class="p">),</span> <span class="n">sorted_index</span><span class="p">)</span>
+    <span class="c1"># tuple-ize the path entry, join with the index file dirname</span>
+    <span class="n">sorted_index</span> <span class="o">=</span> <span class="n">valmap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">assoc</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">index_dir</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])),</span>
+                          <span class="n">sorted_index</span><span class="p">)</span>
+
+    <span class="n">uuid_sorted</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">sorted_index</span><span class="p">,</span>
+        <span class="s1">&#39;pca_path&#39;</span><span class="p">:</span> <span class="n">join</span><span class="p">(</span><span class="n">index_dir</span><span class="p">,</span> <span class="n">index</span><span class="p">[</span><span class="s1">&#39;pca_path&#39;</span><span class="p">])</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">index</span><span class="p">,</span> <span class="n">uuid_sorted</span></div>
+
+
+<div class="viewcode-block" id="get_sorted_index"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.get_sorted_index">[docs]</a><span class="k">def</span> <span class="nf">get_sorted_index</span><span class="p">(</span><span class="n">index_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39; Just return the sorted index from an index_file path&#39;&#39;&#39;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">sorted_ind</span> <span class="o">=</span> <span class="n">parse_index</span><span class="p">(</span><span class="n">index_file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sorted_ind</span></div>
+
+
+<div class="viewcode-block" id="h5_filepath_from_sorted"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.h5_filepath_from_sorted">[docs]</a><span class="k">def</span> <span class="nf">h5_filepath_from_sorted</span><span class="p">(</span><span class="n">sorted_index_entry</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Gets the h5 extraction file path from a sorted index entry</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        a str containing the extraction filepath</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">first</span><span class="p">(</span><span class="n">sorted_index_entry</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="recursive_find_h5s"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.recursive_find_h5s">[docs]</a><span class="k">def</span> <span class="nf">recursive_find_h5s</span><span class="p">(</span><span class="n">root_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
+                       <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.h5&#39;</span><span class="p">,</span>
+                       <span class="n">yaml_string</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.yaml&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursively find h5 files, along with yaml files with the same basename</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">has_frames</span><span class="p">(</span><span class="n">h5f</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Checks if the supplied h5 file has a frames key&#39;&#39;&#39;</span>
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5f</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;frames&#39;</span> <span class="ow">in</span> <span class="n">f</span>
+
+    <span class="k">def</span> <span class="nf">h5_to_yaml</span><span class="p">(</span><span class="n">h5f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">yaml_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">h5f</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># make function to test if yaml file with same basename as h5 file exists</span>
+    <span class="n">yaml_exists</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">,</span> <span class="n">h5_to_yaml</span><span class="p">)</span>
+
+    <span class="c1"># grab all files with ext = .h5</span>
+    <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;**/*</span><span class="si">{ext}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># keep h5s that have a yaml file associated with them</span>
+    <span class="n">to_keep</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">yaml_exists</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+    <span class="c1"># keep h5s that have a frames key</span>
+    <span class="n">to_keep</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="n">has_frames</span><span class="p">,</span> <span class="n">to_keep</span><span class="p">)</span>
+
+    <span class="n">h5s</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_keep</span><span class="p">)</span>
+    <span class="n">yamls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">h5_to_yaml</span><span class="p">,</span> <span class="n">h5s</span><span class="p">))</span>
+    <span class="n">dicts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">read_yaml</span><span class="p">,</span> <span class="n">yamls</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">h5s</span><span class="p">,</span> <span class="n">dicts</span><span class="p">,</span> <span class="n">yamls</span></div>
+
+
+<div class="viewcode-block" id="read_yaml"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.read_yaml">[docs]</a><span class="k">def</span> <span class="nf">read_yaml</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">loaded</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loaded</span></div>
+
+
+<span class="c1"># from https://stackoverflow.com/questions/40084931/taking-subarrays-from-numpy-array-with-given-stride-stepsize/40085052#40085052</span>
+<span class="c1"># dang this is fast!</span>
+<div class="viewcode-block" id="strided_app"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.strided_app">[docs]</a><span class="k">def</span> <span class="nf">strided_app</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">S</span><span class="p">):</span>  <span class="c1"># Window len = L, Stride len/stepsize = S</span>
+    <span class="n">nrows</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">L</span><span class="p">)</span> <span class="o">//</span> <span class="n">S</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">strides</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">L</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="n">S</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="star"><a class="viewcode-back" href="../../moseq2_viz.html#moseq2_viz.util.star">[docs]</a><span class="nd">@curry</span>
+<span class="k">def</span> <span class="nf">star</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Apply a function to a tuple of args, by expanding the tuple into</span>
+<span class="sd">    each of the function&#39;s parameters. It is curried, which allows one to</span>
+<span class="sd">    specify one argument at a time.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        f: a function that takes multiple arguments</span>
+<span class="sd">        args: a tuple to expand into `f`</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        the output of `f`</span>
+
+<span class="sd">    &gt;&gt;&gt; instance_checker = star(isinstance)</span>
+<span class="sd">    &gt;&gt;&gt; instance_checker((1, int))</span>
+<span class="sd">    True&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">moseq2-viz</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Command-line interface:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">MoSeq2-viz - the command-line interface</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../moseq2_viz.html">moseq2_viz package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

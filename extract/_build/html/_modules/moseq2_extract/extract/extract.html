@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>moseq2_extract.extract.extract &#8212; moseq2-extract  documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for moseq2_extract.extract.extract</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">moseq2_extract.extract.proc</span> <span class="k">import</span> <span class="p">(</span><span class="n">crop_and_rotate_frames</span><span class="p">,</span>
+                                         <span class="n">clean_frames</span><span class="p">,</span> <span class="n">apply_roi</span><span class="p">,</span> <span class="n">get_frame_features</span><span class="p">,</span>
+                                         <span class="n">get_flips</span><span class="p">,</span> <span class="n">compute_scalars</span><span class="p">,</span> <span class="n">feature_hampel_filter</span><span class="p">,</span>
+                                         <span class="n">model_smoother</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">moseq2_extract.extract.track</span> <span class="k">import</span> <span class="n">em_tracking</span><span class="p">,</span> <span class="n">em_get_ll</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># one stop shopping for taking some frames and doing stuff</span>
+
+
+<div class="viewcode-block" id="extract_chunk"><a class="viewcode-back" href="../../../moseq2_extract.extract.html#moseq2_extract.extract.extract.extract_chunk">[docs]</a><span class="k">def</span> <span class="nf">extract_chunk</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">use_em_tracker</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">prefilter_space</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,),</span>
+                  <span class="n">prefilter_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">iters_tail</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">iters_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                  <span class="n">strel_tail</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_ELLIPSE</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span>
+                  <span class="n">strel_min</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_RECT</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+                  <span class="n">min_height</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                  <span class="n">mask_threshold</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">use_cc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">bground</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">roi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">rho_mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rho_cov</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                  <span class="n">tracking_ll_threshold</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">tracking_segment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">tracking_init_mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tracking_init_cov</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">tracking_init_strel</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_ELLIPSE</span><span class="p">,</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span>
+                  <span class="n">flip_classifier</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flip_smoothing</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span>
+                  <span class="n">frame_dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;proc&#39;</span><span class="p">),</span>
+                  <span class="n">progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">crop_size</span><span class="o">=</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">true_depth</span><span class="o">=</span><span class="mf">673.1</span><span class="p">,</span>
+                  <span class="n">centroid_hampel_span</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">centroid_hampel_sig</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                  <span class="n">angle_hampel_span</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">angle_hampel_sig</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                  <span class="n">model_smoothing_clips</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">300</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">),</span> <span class="n">tracking_model_init</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">):</span>
+
+    <span class="c1"># if we pass bground or roi files, be sure to use &#39;em...</span>
+
+    <span class="k">if</span> <span class="n">bground</span><span class="p">:</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="p">(</span><span class="n">bground</span><span class="o">-</span><span class="n">chunk</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">frame_dtype</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">roi</span><span class="p">:</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">apply_roi</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+
+    <span class="c1"># denoise the frames before we do anything else</span>
+
+    <span class="n">filtered_frames</span> <span class="o">=</span> <span class="n">clean_frames</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span>
+                                   <span class="n">prefilter_space</span><span class="o">=</span><span class="n">prefilter_space</span><span class="p">,</span>
+                                   <span class="n">prefilter_time</span><span class="o">=</span><span class="n">prefilter_time</span><span class="p">,</span>
+                                   <span class="n">iters_tail</span><span class="o">=</span><span class="n">iters_tail</span><span class="p">,</span>
+                                   <span class="n">strel_tail</span><span class="o">=</span><span class="n">strel_tail</span><span class="p">,</span>
+                                   <span class="n">iters_min</span><span class="o">=</span><span class="n">iters_min</span><span class="p">,</span>
+                                   <span class="n">strel_min</span><span class="o">=</span><span class="n">strel_min</span><span class="p">,</span>
+                                   <span class="n">frame_dtype</span><span class="o">=</span><span class="n">frame_dtype</span><span class="p">,</span>
+                                   <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+
+    <span class="c1"># if we need it, compute the em parameters</span>
+    <span class="c1"># (for tracking in presence of occluders)</span>
+
+    <span class="k">if</span> <span class="n">use_em_tracker</span><span class="p">:</span>
+        <span class="c1"># print(&#39;Computing EM parameters...&#39;)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">em_tracking</span><span class="p">(</span>
+            <span class="n">filtered_frames</span><span class="p">,</span> <span class="n">chunk</span><span class="p">,</span> <span class="n">rho_mean</span><span class="o">=</span><span class="n">rho_mean</span><span class="p">,</span>
+            <span class="n">rho_cov</span><span class="o">=</span><span class="n">rho_cov</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">,</span>
+            <span class="n">ll_threshold</span><span class="o">=</span><span class="n">tracking_ll_threshold</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="n">tracking_segment</span><span class="p">,</span>
+            <span class="n">init_mean</span><span class="o">=</span><span class="n">tracking_init_mean</span><span class="p">,</span> <span class="n">init_cov</span><span class="o">=</span><span class="n">tracking_init_cov</span><span class="p">,</span>
+            <span class="n">init_strel</span><span class="o">=</span><span class="n">tracking_init_strel</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="n">tracking_model_init</span><span class="p">)</span>
+        <span class="n">ll</span> <span class="o">=</span> <span class="n">em_get_ll</span><span class="p">(</span><span class="n">filtered_frames</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="c1"># ll_raw = em_get_ll(chunk, progress_bar=progress_bar, **parameters)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ll</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># now get the centroid and orientation of the mouse</span>
+
+    <span class="c1"># print(&#39;Getting centroid and orientation...&#39;)</span>
+    <span class="n">features</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">get_frame_features</span><span class="p">(</span><span class="n">filtered_frames</span><span class="p">,</span>
+                                        <span class="n">frame_threshold</span><span class="o">=</span><span class="n">min_height</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">ll</span><span class="p">,</span>
+                                        <span class="n">mask_threshold</span><span class="o">=</span><span class="n">mask_threshold</span><span class="p">,</span>
+                                        <span class="n">use_cc</span><span class="o">=</span><span class="n">use_cc</span><span class="p">,</span>
+                                        <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+
+    <span class="n">incl</span> <span class="o">=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">])</span>
+    <span class="n">features</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">][</span><span class="n">incl</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">][</span><span class="n">incl</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="n">features</span> <span class="o">=</span> <span class="n">feature_hampel_filter</span><span class="p">(</span><span class="n">features</span><span class="p">,</span>
+                                     <span class="n">centroid_hampel_span</span><span class="o">=</span><span class="n">centroid_hampel_span</span><span class="p">,</span>
+                                     <span class="n">centroid_hampel_sig</span><span class="o">=</span><span class="n">centroid_hampel_sig</span><span class="p">,</span>
+                                     <span class="n">angle_hampel_span</span><span class="o">=</span><span class="n">angle_hampel_span</span><span class="p">,</span>
+                                     <span class="n">angle_hampel_sig</span><span class="o">=</span><span class="n">angle_hampel_sig</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">ll</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">model_smoother</span><span class="p">(</span><span class="n">features</span><span class="p">,</span>
+                                  <span class="n">ll</span><span class="o">=</span><span class="n">ll</span><span class="p">,</span>
+                                  <span class="n">clips</span><span class="o">=</span><span class="n">model_smoothing_clips</span><span class="p">)</span>
+
+    <span class="c1"># crop and rotate the frames</span>
+
+    <span class="c1"># print(&#39;Cropping frames...&#39;)</span>
+    <span class="n">cropped_frames</span> <span class="o">=</span> <span class="n">crop_and_rotate_frames</span><span class="p">(</span>
+        <span class="n">chunk</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">crop_size</span><span class="o">=</span><span class="n">crop_size</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+    <span class="n">cropped_filtered_frames</span> <span class="o">=</span> <span class="n">crop_and_rotate_frames</span><span class="p">(</span>
+        <span class="n">filtered_frames</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">crop_size</span><span class="o">=</span><span class="n">crop_size</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">use_em_tracker</span><span class="p">:</span>
+        <span class="n">use_parameters</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="n">use_parameters</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">crop_size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">use_parameters</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">crop_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">em_get_ll</span><span class="p">(</span><span class="n">cropped_frames</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">,</span> <span class="o">**</span><span class="n">use_parameters</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">crop_and_rotate_frames</span><span class="p">(</span>
+            <span class="n">mask</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">crop_size</span><span class="o">=</span><span class="n">crop_size</span><span class="p">,</span> <span class="n">progress_bar</span><span class="o">=</span><span class="n">progress_bar</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># if use_em_tracker:</span>
+    <span class="c1">#     cropped_ll = crop_and_rotate_frames(</span>
+    <span class="c1">#             ll, features, crop_size=crop_size, progress_bar=progress_bar)</span>
+    <span class="c1"># else:</span>
+    <span class="c1">#     cropped_ll = None</span>
+
+    <span class="k">if</span> <span class="n">flip_classifier</span><span class="p">:</span>
+        <span class="c1"># print(&#39;Fixing flips...&#39;)</span>
+        <span class="n">flips</span> <span class="o">=</span> <span class="n">get_flips</span><span class="p">(</span><span class="n">cropped_frames</span><span class="p">,</span> <span class="n">flip_classifier</span><span class="p">,</span> <span class="n">flip_smoothing</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">flip</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">flips</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">cropped_frames</span><span class="p">[</span><span class="n">flip</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">cropped_frames</span><span class="p">[</span><span class="n">flip</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">cropped_filtered_frames</span><span class="p">[</span><span class="n">flip</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">cropped_filtered_frames</span><span class="p">[</span><span class="n">flip</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">mask</span><span class="p">[</span><span class="n">flip</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">mask</span><span class="p">[</span><span class="n">flip</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">features</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">][</span><span class="n">flips</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="c1"># if use_em_tracker:</span>
+        <span class="c1">#     cropped_ll = np.flip(cropped_ll[flips, ...], axis=2)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">flips</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># todo: put in an option to compute scalars on raw or filtered</span>
+
+    <span class="n">scalars</span> <span class="o">=</span> <span class="n">compute_scalars</span><span class="p">(</span><span class="n">cropped_filtered_frames</span><span class="p">,</span>
+                              <span class="n">features</span><span class="p">,</span>
+                              <span class="n">min_height</span><span class="o">=</span><span class="n">min_height</span><span class="p">,</span>
+                              <span class="n">max_height</span><span class="o">=</span><span class="n">max_height</span><span class="p">,</span>
+                              <span class="n">true_depth</span><span class="o">=</span><span class="n">true_depth</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;depth_frames&#39;</span><span class="p">:</span> <span class="n">cropped_frames</span><span class="p">,</span>
+        <span class="s1">&#39;mask_frames&#39;</span><span class="p">:</span> <span class="n">mask</span><span class="p">,</span>
+        <span class="s1">&#39;scalars&#39;</span><span class="p">:</span> <span class="n">scalars</span><span class="p">,</span>
+        <span class="s1">&#39;flips&#39;</span><span class="p">:</span> <span class="n">flips</span><span class="p">,</span>
+        <span class="c1"># &#39;cropped_ll&#39;: cropped_ll</span>
+        <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">parameters</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">moseq2-extract</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../moseq2_extract.html">moseq2_extract package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Jeff Markowitz, Winthrop Gillis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

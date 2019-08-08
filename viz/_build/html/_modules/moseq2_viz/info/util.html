@@ -33,9 +33,16 @@
 <span class="kn">from</span> <span class="nn">moseq2_viz.model.util</span> <span class="k">import</span> <span class="n">get_syllable_statistics</span><span class="p">,</span> <span class="n">get_transition_matrix</span>
 
 
-<div class="viewcode-block" id="entropy"><a class="viewcode-back" href="../../../moseq2_viz.info.html#moseq2_viz.info.util.entropy">[docs]</a><span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">truncate_syllable</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Computes entropy, base 2</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="entropy"><a class="viewcode-back" href="../../../moseq2_viz.info.html#moseq2_viz.info.util.entropy">[docs]</a><span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">truncate_syllable</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span> <span class="n">smoothing</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Computes the entropy of syllables for a group of animals.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        labels: a list of labels from one or more animals</span>
+<span class="sd">        truncate_syllable: the max number of syllables to include in the computation</span>
+<span class="sd">        smoothing: factor to reduce DivideByZero errors</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        a list of entropies for each animal</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">ent</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
@@ -55,7 +62,7 @@
         <span class="n">usages</span> <span class="o">=</span> <span class="n">usages</span><span class="p">[:</span><span class="n">truncate_point</span><span class="p">]</span> <span class="o">+</span> <span class="n">smoothing</span>
         <span class="n">usages</span> <span class="o">/=</span> <span class="n">usages</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
-        <span class="n">ent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">usages</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">usages</span><span class="p">)))</span>
+        <span class="n">ent</span> <span class="o">+=</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">usages</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">usages</span><span class="p">))]</span>
 
     <span class="k">return</span> <span class="n">ent</span></div>
 

@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to the moseq2-viz documentation
-======================================
+=======================================
 
 Just like the other MoSeq-related packages our lab developed, ``moseq2-viz``
 provides two methods of interaction: the command-line interface (CLI) or

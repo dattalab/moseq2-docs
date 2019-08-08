@@ -39,13 +39,28 @@
 <span id="moseq2-viz-info-util-module"></span><h2>moseq2_viz.info.util module<a class="headerlink" href="#module-moseq2_viz.info.util" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="moseq2_viz.info.util.entropy">
-<code class="sig-prename descclassname">moseq2_viz.info.util.</code><code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">truncate_syllable=40</em>, <em class="sig-param">smoothing=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/info/util.html#entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.info.util.entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes entropy, base 2</p>
+<code class="sig-name descname">entropy</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">truncate_syllable=40</em>, <em class="sig-param">smoothing=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/info/util.html#entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.info.util.entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the entropy of syllables for a group of animals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labels</strong> – a list of labels from one or more animals</p></li>
+<li><p><strong>truncate_syllable</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the max number of syllables to include in the computation</p></li>
+<li><p><strong>smoothing</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – factor to reduce DivideByZero errors</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of entropies for each animal</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="moseq2_viz.info.util.entropy_rate">
-<code class="sig-prename descclassname">moseq2_viz.info.util.</code><code class="sig-name descname">entropy_rate</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">truncate_syllable=40</em>, <em class="sig-param">normalize='bigram'</em>, <em class="sig-param">smoothing=1.0</em>, <em class="sig-param">tm_smoothing=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/info/util.html#entropy_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.info.util.entropy_rate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">entropy_rate</code><span class="sig-paren">(</span><em class="sig-param">labels</em>, <em class="sig-param">truncate_syllable=40</em>, <em class="sig-param">normalize='bigram'</em>, <em class="sig-param">smoothing=1.0</em>, <em class="sig-param">tm_smoothing=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/moseq2_viz/info/util.html#entropy_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moseq2_viz.info.util.entropy_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes entropy rate, base 2</p>
 </dd></dl>
 
@@ -71,7 +86,11 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Command-line interface:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">MoSeq2-viz - the command-line interface</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="moseq2_viz.html">moseq2_viz package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="moseq2_viz.html#subpackages">Subpackages</a><ul class="current">

@@ -156,10 +156,20 @@
 
 
 <div class="viewcode-block" id="get_mouse_syllable_slices"><a class="viewcode-back" href="../../../moseq2_viz.model.html#moseq2_viz.model.util.get_mouse_syllable_slices">[docs]</a><span class="k">def</span> <span class="nf">get_mouse_syllable_slices</span><span class="p">(</span><span class="n">syllable</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">slice</span><span class="p">]:</span>
-    <span class="sd">&#39;&#39;&#39;Return a generator containing slices of `syllable` indices for a mouse&#39;&#39;&#39;</span>
-    <span class="n">is_syllable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">syllable</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="sd">&#39;&#39;&#39;Return a generator containing slices of `syllable` indices for a mouse</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        syllable: the syllable label to get slices for</span>
+<span class="sd">        labels: the label array</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; lbls = [1, 1, 1, 2, 2, 2, 3, 3, 3, 2, 2, 2]</span>
+<span class="sd">    &gt;&gt;&gt; list(get_mouse_syllable_slices(2, np.array(lbls)))</span>
+<span class="sd">    [slice(3, 6, None), slice(9, 12, None)]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(([</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">labels</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">is_syllable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">syllable</span><span class="p">))</span>
     <span class="n">starts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_syllable</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_syllable</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">ends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">is_syllable</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">slices</span> <span class="o">=</span> <span class="n">starmap</span><span class="p">(</span><span class="nb">slice</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="n">starts</span><span class="p">,</span> <span class="n">ends</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">slices</span></div>
 
@@ -320,11 +330,11 @@
 
 <span class="sd">    Example:</span>
 
-<span class="sd">        Load in model results and get the transition matrix combined across sessions.</span>
+<span class="sd">        Load in model results and get the transition matrix combined across sessions.::</span>
 
-<span class="sd">        &gt;&gt; from moseq2_viz.model.util import parse_model_results, get_syllable_statistics</span>
-<span class="sd">        &gt;&gt; model_results = parse_model_results(&#39;mymodel.p&#39;)</span>
-<span class="sd">        &gt;&gt; usages, durations = get_syllable_statistics(model_results[&#39;labels&#39;])</span>
+<span class="sd">            from moseq2_viz.model.util import parse_model_results, get_syllable_statistics</span>
+<span class="sd">            model_results = parse_model_results(&#39;mymodel.p&#39;)</span>
+<span class="sd">            usages, durations = get_syllable_statistics(model_results[&#39;labels&#39;])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -711,12 +721,12 @@
 
 <span class="sd">    Examples:</span>
 
-<span class="sd">        Load in pca_scores and whiten</span>
+<span class="sd">        Load in pca_scores and whiten::</span>
 
-<span class="sd">        &gt;&gt; from moseq2_viz.util import h5_to_dict</span>
-<span class="sd">        &gt;&gt; from moseq2_viz.model.util import whiten_pcs</span>
-<span class="sd">        &gt;&gt; pca_scores = h5_to_dict(&#39;pca_scores.h5&#39;, &#39;/scores&#39;)</span>
-<span class="sd">        &gt;&gt; whitened_scores = whiten_pcs(pca_scores, method=&#39;all&#39;)</span>
+<span class="sd">            from moseq2_viz.util import h5_to_dict</span>
+<span class="sd">            from moseq2_viz.model.util import whiten_pcs</span>
+<span class="sd">            pca_scores = h5_to_dict(&#39;pca_scores.h5&#39;, &#39;/scores&#39;)</span>
+<span class="sd">            whitened_scores = whiten_pcs(pca_scores, method=&#39;all&#39;)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 

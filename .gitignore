@@ -108,3 +108,25 @@ venv.bak/
 # it just works
 .DS_Store
 
+usage-docs/media/good-session.tar.gz
+usage-docs/sample_session/depth.dat
+usage-docs/sample_session/depth_ts.txt
+usage-docs/sample_session/metadata.json
+usage-docs/sample_session/moseq2-index.yaml
+usage-docs/sample_session/my_model.pkl
+usage-docs/sample_session/_pca/changepoints.h5
+usage-docs/sample_session/_pca/changepoints_dist.pdf
+usage-docs/sample_session/_pca/changepoints_dist.png
+usage-docs/sample_session/_pca/pca.h5
+usage-docs/sample_session/_pca/pca.yaml
+usage-docs/sample_session/_pca/pca_components.pdf
+usage-docs/sample_session/_pca/pca_components.png
+usage-docs/sample_session/_pca/pca_scores.h5
+usage-docs/sample_session/_pca/pca_scree.pdf
+usage-docs/sample_session/_pca/pca_scree.png
+usage-docs/sample_session/proc/bground.tiff
+usage-docs/sample_session/proc/first_frame.tiff
+usage-docs/sample_session/proc/results_00.h5
+usage-docs/sample_session/proc/results_00.mp4
+usage-docs/sample_session/proc/results_00.yaml
+usage-docs/sample_session/proc/roi_00.tiff

@@ -4,3 +4,6 @@ In order to view the jupyter notebook walkthroughs:
  3. Run command: jupyter notebook
  
 A webpage will open listing the jupyter notebooks.
+
+If you don't have jupyter installed, run:
+pip install jupyter

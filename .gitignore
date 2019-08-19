@@ -108,6 +108,7 @@ venv.bak/
 # it just works
 .DS_Store
 
+usage-docs/sample_session/*
 usage-docs/media/good-session.tar.gz
 usage-docs/sample_session/depth.dat
 usage-docs/sample_session/depth_ts.txt

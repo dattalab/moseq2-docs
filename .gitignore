@@ -130,3 +130,11 @@ usage-docs/sample_session/proc/results_00.h5
 usage-docs/sample_session/proc/results_00.mp4
 usage-docs/sample_session/proc/results_00.yaml
 usage-docs/sample_session/proc/roi_00.tiff
+
+*.mp4
+
+*.tiff
+
+*.yaml
+
+*.sh

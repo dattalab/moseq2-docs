@@ -7,3 +7,5 @@ A webpage will open listing the jupyter notebooks.
 
 If you don't have jupyter installed, run:
 pip install jupyter
+
+Or follow this link to the jupyter installation website: https://jupyter.org/install.html

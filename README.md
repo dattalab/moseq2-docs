@@ -5,6 +5,13 @@ MoSeq2 is a library for the collection, extraction, and modeling of 3D behaviora
 # Full documentation
 
 Head over to the [wiki](http://github.com/dattalab/moseq2-docs/wiki) for full documentation, tutorials and examples.
+ - This contains a full overview of the following:
+  - Hardware/Software Requirements and Setup
+  - 3D Data Acquisition using Kinect Nidaq Tutorial
+  - Overview of analysis using MoSeq2 tools.
+  - Troubleshooting information
+  
+For a step-by-step usage tutorial, open the [usage-docs](https://github.com/dattalab/moseq2-docs/tree/master/usage-docs). Which contains sequential jupyter notebooks showcasing nearly all the tools in the MoSeq2 Pipeline API.
 
 # Communication
 

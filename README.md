@@ -2,7 +2,7 @@
 
 MoSeq2 is a library for the collection, extraction, and modeling of 3D behavioral data collected using commercial 3D depth sensors.  
 
-# Full documentation
+# Full Pipeline documentation
 
 Head over to the [wiki](http://github.com/dattalab/moseq2-docs/wiki) for full documentation, tutorials and examples.
  - This contains a full overview of the following:
@@ -11,6 +11,7 @@ Head over to the [wiki](http://github.com/dattalab/moseq2-docs/wiki) for full do
   - Overview of analysis using MoSeq2 tools.
   - Troubleshooting information
   
+# MoSeq2 Usage Manual
 For a step-by-step usage tutorial, open the [usage-docs](https://github.com/dattalab/moseq2-docs/tree/master/usage-docs). Which contains sequential jupyter notebooks showcasing nearly all the tools in the MoSeq2 Pipeline API.
 
 # Communication

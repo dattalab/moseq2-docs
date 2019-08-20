@@ -17,3 +17,6 @@ Or follow this link to the jupyter installation website: https://jupyter.org/ins
 - Step 4: Model
 - Step 5: Viz
 - Step 6: Statistical Analysis
+
+Pipeline:
+<img src="media/moseq2_pipeline.png" alt="Sequential MoSeq2 Usage Pattern" title="MoSeq2 Pipeline" />

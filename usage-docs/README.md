@@ -9,3 +9,11 @@ If you don't have jupyter installed, run:
 pip install jupyter
 
 Or follow this link to the jupyter installation website: https://jupyter.org/install.html
+
+- Step 0: Glossary
+- Step 1: Extract
+- Step 2: PCA
+- Step 3: PCA: Compute Changepoints
+- Step 4: Model
+- Step 5: Viz
+- Step 6: Statistical Analysis

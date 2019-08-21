@@ -10,7 +10,7 @@ For a step-by-step usage and installation tutorial, open the [usage-docs](https:
 Head over to the [wiki](http://github.com/dattalab/moseq2-docs/wiki) for full documentation, tutorials and examples.
  - This contains a full overview of the following:
   - Hardware/Software Requirements and Setup
-  - 3D Data Acquisition using Kinect Nidaq Tutorial
+  - 3D Data Acquisition using Kinect2-Nidaq Tutorial
   - Overview of analysis using MoSeq2 tools.
   - Troubleshooting information
 
